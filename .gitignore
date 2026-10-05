@@ -1,0 +1,9 @@
+# ====================================================================================================================
+# Credits https://stackoverflow.com/questions/18393498/gitignore-all-the-ds-store-files-in-every-folder-and-subfolder
+# ignore it for all repositories
+# echo .DS_Store >> ~/.gitignore_global
+# git config --global core.excludesfile ~/.gitignore_global
+# ====================================================================================================================
+
+./build
+format.sh
