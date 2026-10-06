@@ -5,6 +5,6 @@
 # git config --global core.excludesfile ~/.gitignore_global
 # ====================================================================================================================
 
-./build
+build
 format.sh
 notes.txt
