@@ -11,7 +11,7 @@
 #   BASED ON THE LINUX KERNEL https://github.com/torvalds/linux
 #
 
-AccessModifierOffset: -4
+AccessModifierOffset: -8
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false

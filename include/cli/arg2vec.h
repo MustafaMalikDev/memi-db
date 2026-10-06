@@ -15,8 +15,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
+#ifndef _MEMIDB_CLI_ARG2VEC_H_
+#define _MEMIDB_CLI_ARG2VEC_H_
 
-int main(int argc, char* argv[])
+#include <vector>
+
+namespace memi
 {
+
+inline std::vector<std::string_view> args2vec(int argc, char* argv[])
+{
+	static std::vector<std::string_view> args(argv + 1, argv + argc);
+	return args;
 }
+
+}
+
+#endif /* _MEMIDB_CLI_ARG2VEC_H_ */

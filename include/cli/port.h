@@ -15,8 +15,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
+#ifndef _MEMIDB_CLI_PORT_H_
+#define _MEMIDB_CLI_PORT_H_
 
-int main(int argc, char* argv[])
+#include "config.h"
+#include "arg2vec.h"
+
+#define MEMIDB_DEFAULT_PORT 6721
+
+namespace memi
 {
+
+class port final {
+private:
+	port();
+	~port() = default;
+
+	MEMI_NO_COPY_MOVE(port)
+
+public:
+	MEMI_DECLARE_SINGLETON(port, int argc, char* argv[])
+	{
+		static port p;
+		p.m_args = args2vec(argc, argv);
+
+		return p;
+	}
+
+private:
+	uint16_t m_port{ MEMIDB_DEFAULT_PORT };
+	std::vector<std::string_view> m_args{};
+};
+
 }
+
+#endif /* _MEMIDB_CLI_PORT_H_ */
