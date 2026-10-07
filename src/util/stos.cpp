@@ -15,15 +15,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "util/stos.h"
 #include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
 
-int main(int argc, char* argv[])
+namespace memi
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
 
-	memi::port& port = memi::port::instance(argc, argv);
+int16_t stos(const std::string str)
+{
+	MEMI_RETURN_QUICK_IF(str.empty(), 0)
+
+	int conv = std::stoi(str);
+	int min = std::numeric_limits<int16_t>::lowest();
+	int max = std::numeric_limits<int16_t>::max();
+
+	if (conv >= min && conv <= max) {
+		return (int16_t)conv;
+	}
+
+	return 0;
+}
+
+int16_t stos(const std::string_view str)
+{
+	return stos(std::string(str));
+}
+
 }

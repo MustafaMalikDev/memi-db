@@ -15,15 +15,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+//
+// Copyright(c) 2016 Gabi Melman.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
+//
 
-int main(int argc, char* argv[])
-{
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+#pragma once
+//
+// include bundled or external copy of fmtlib's std support (for formatting e.g.
+// std::filesystem::path, std::thread::id, std::monostate, std::variant, ...)
+//
+#include <spdlog/tweakme.h>
 
-	memi::port& port = memi::port::instance(argc, argv);
-}
+#if !defined(SPDLOG_USE_STD_FORMAT)
+#	if !defined(SPDLOG_FMT_EXTERNAL)
+#		ifdef SPDLOG_HEADER_ONLY
+#			ifndef FMT_HEADER_ONLY
+#				define FMT_HEADER_ONLY
+#			endif
+#		endif
+#		include <spdlog/fmt/bundled/std.h>
+#	else
+#		include <fmt/std.h>
+#	endif
+#endif

@@ -15,15 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+#pragma once
 
-int main(int argc, char* argv[])
-{
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+#ifndef NOMINMAX
+#	define NOMINMAX // prevent windows redefining min/max
+#endif
 
-	memi::port& port = memi::port::instance(argc, argv);
-}
+#ifndef WIN32_LEAN_AND_MEAN
+#	define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>

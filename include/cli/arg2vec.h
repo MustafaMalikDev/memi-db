@@ -23,11 +23,7 @@
 namespace memi
 {
 
-inline std::vector<std::string_view> args2vec(int argc, char* argv[])
-{
-	static std::vector<std::string_view> args(argv + 1, argv + argc);
-	return args;
-}
+std::vector<std::string_view> args2vec(int argc, char* argv[]);
 
 }
 

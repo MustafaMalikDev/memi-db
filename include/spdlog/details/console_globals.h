@@ -15,15 +15,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-int main(int argc, char* argv[])
+#pragma once
+
+#include <mutex>
+#include <spdlog/details/null_mutex.h>
+
+namespace spdlog
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+namespace details
+{
 
-	memi::port& port = memi::port::instance(argc, argv);
-}
+struct console_mutex {
+	using mutex_t = std::mutex;
+	static mutex_t& mutex()
+	{
+		static mutex_t s_mutex;
+		return s_mutex;
+	}
+};
+
+struct console_nullmutex {
+	using mutex_t = null_mutex;
+	static mutex_t& mutex()
+	{
+		static mutex_t s_mutex;
+		return s_mutex;
+	}
+};
+} // namespace details
+} // namespace spdlog

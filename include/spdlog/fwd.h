@@ -15,15 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-int main(int argc, char* argv[])
+#pragma once
+
+namespace spdlog
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+class logger;
+class formatter;
 
-	memi::port& port = memi::port::instance(argc, argv);
+namespace sinks
+{
+class sink;
 }
+
+namespace level
+{
+enum level_enum : int;
+}
+
+} // namespace spdlog

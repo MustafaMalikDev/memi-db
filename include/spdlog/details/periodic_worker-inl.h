@@ -15,15 +15,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-int main(int argc, char* argv[])
+#pragma once
+
+#ifndef SPDLOG_HEADER_ONLY
+#	include <spdlog/details/periodic_worker.h>
+#endif
+
+namespace spdlog
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+namespace details
+{
 
-	memi::port& port = memi::port::instance(argc, argv);
+// stop the worker thread and join it
+SPDLOG_INLINE periodic_worker::~periodic_worker()
+{
+	if (worker_thread_.joinable()) {
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			active_ = false;
+		}
+		cv_.notify_one();
+		worker_thread_.join();
+	}
 }
+
+} // namespace details
+} // namespace spdlog

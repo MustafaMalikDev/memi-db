@@ -15,15 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-int main(int argc, char* argv[])
-{
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+#pragma once
 
-	memi::port& port = memi::port::instance(argc, argv);
-}
+#define SPDLOG_VER_MAJOR 1
+#define SPDLOG_VER_MINOR 13
+#define SPDLOG_VER_PATCH 0
+
+#define SPDLOG_TO_VERSION(major, minor, patch) \
+	(major * 10000 + minor * 100 + patch)
+#define SPDLOG_VERSION \
+	SPDLOG_TO_VERSION(SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH)

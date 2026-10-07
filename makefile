@@ -1,5 +1,7 @@
 CC := g++
 CFLAGS := -Wall -Iinclude -std=c++11
+# LDFLAGS := -Llibs
+# LDLIBS := -lspdlog -lpthread
 
 SRC_DIR := ./src
 BUILD_DIR := build

@@ -24,7 +24,8 @@
 /*+                 HELPER MACROS                +*/
 /*+----------------------------------------------+*/
 
-#define MEMI_DECLARE_SINGLETON(clazz, ...) static clazz& instance(__VA_ARGS__)
+#define MEMI_DECLARE_SINGLETON(clazz, ...) \
+	[[nodiscard]] static clazz& instance(__VA_ARGS__)
 
 /* inspired by Qt source code */
 #define MEMI_NO_COPY(clazz)           \
@@ -38,5 +39,9 @@
 #define MEMI_NO_COPY_MOVE(clazz) \
 	MEMI_NO_COPY(clazz)      \
 	MEMI_NO_MOVE(clazz)
+
+#define MEMI_RETURN_QUICK_IF(expr, ret) \
+	if (expr)                       \
+		return ret;
 
 #endif /* _MEMIDB_CONFIG_H_ */

@@ -15,15 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+#ifndef _MEMIDB_UTIL_STOS_H_
+#define _MEMIDB_UTIL_STOS_H_
 
-int main(int argc, char* argv[])
+#include "config.h"
+#include <string>
+
+namespace memi
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+int16_t stos(const std::string str);
 
-	memi::port& port = memi::port::instance(argc, argv);
+int16_t stos(const std::string_view str);
 }
+
+#endif /* _MEMIDB_UTIL_STOS_H_ */

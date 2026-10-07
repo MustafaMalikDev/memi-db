@@ -15,15 +15,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include "cli/flag.h"
-#include "cli/port.h"
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
+// Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
-int main(int argc, char* argv[])
+#pragma once
+
+#include <spdlog/common.h>
+#include <unordered_map>
+
+namespace spdlog
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+namespace cfg
+{
+namespace helpers
+{
+//
+// Init levels from given string
+//
+// Examples:
+//
+// set global level to debug: "debug"
+// turn off all logging except for logger1: "off,logger1=debug"
+// turn off all logging except for logger1 and logger2: "off,logger1=debug,logger2=info"
+//
+SPDLOG_API void load_levels(const std::string& txt);
+} // namespace helpers
 
-	memi::port& port = memi::port::instance(argc, argv);
-}
+} // namespace cfg
+} // namespace spdlog
+
+#ifdef SPDLOG_HEADER_ONLY
+#	include "helpers-inl.h"
+#endif // SPDLOG_HEADER_ONLY

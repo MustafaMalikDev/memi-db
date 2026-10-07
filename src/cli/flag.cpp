@@ -15,15 +15,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include "cli/flag.h"
-#include "cli/port.h"
+#include <iostream>
 
-int main(int argc, char* argv[])
+namespace memi
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
 
-	memi::port& port = memi::port::instance(argc, argv);
+std::string_view extract_flag(const std::string& flag,
+			      const std::vector<std::string_view>& args)
+{
+	MEMI_RETURN_QUICK_IF(flag.empty(), {})
+	MEMI_RETURN_QUICK_IF(args.empty(), {})
+
+	for (size_t i = 0; i < args.size(); i++) {
+		std::string arg(args[i]);
+		size_t dash_pos = arg.find("--");
+
+		if (dash_pos == std::string::npos) {
+			continue;
+		}
+
+		arg.erase(dash_pos, 2);
+
+		if (arg == flag) {
+			for (size_t j = i + 1; j < args.size(); j++) {
+				if (args[j].find("--") == std::string::npos) {
+					return args[j];
+				}
+			}
+		}
+	}
+
+	return {};
+}
+
 }
