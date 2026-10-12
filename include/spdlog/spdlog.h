@@ -54,10 +54,10 @@ using default_factory = synchronous_factory;
 //   spdlog::create<daily_file_sink_st>("logger_name", "dailylog_filename", 11, 59);
 template <typename Sink, typename... SinkArgs>
 inline std::shared_ptr<spdlog::logger> create(std::string logger_name,
-					      SinkArgs&&... sink_args)
+                                              SinkArgs&&... sink_args)
 {
 	return default_factory::create<Sink>(
-		std::move(logger_name), std::forward<SinkArgs>(sink_args)...);
+	        std::move(logger_name), std::forward<SinkArgs>(sink_args)...);
 }
 
 // Initialize and register a logger,
@@ -85,8 +85,8 @@ SPDLOG_API void set_formatter(std::unique_ptr<spdlog::formatter> formatter);
 // Set global format string.
 // example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
 SPDLOG_API void
-set_pattern(std::string	      pattern,
-	    pattern_time_type time_type = pattern_time_type::local);
+set_pattern(std::string       pattern,
+            pattern_time_type time_type = pattern_time_type::local);
 
 // enable global backtrace support
 SPDLOG_API void enable_backtrace(size_t n_messages);
@@ -174,18 +174,18 @@ SPDLOG_API void apply_logger_env_levels(std::shared_ptr<logger> logger);
 
 template <typename... Args>
 inline void log(source_loc source, level::level_enum lvl,
-		format_string_t<Args...> fmt, Args&&... args)
+                format_string_t<Args...> fmt, Args&&... args)
 {
 	default_logger_raw()->log(source, lvl, fmt,
-				  std::forward<Args>(args)...);
+	                          std::forward<Args>(args)...);
 }
 
 template <typename... Args>
 inline void log(level::level_enum lvl, format_string_t<Args...> fmt,
-		Args&&... args)
+                Args&&... args)
 {
 	default_logger_raw()->log(source_loc{}, lvl, fmt,
-				  std::forward<Args>(args)...);
+	                          std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -238,18 +238,18 @@ template <typename T> inline void log(level::level_enum lvl, const T& msg)
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
 template <typename... Args>
 inline void log(source_loc source, level::level_enum lvl,
-		wformat_string_t<Args...> fmt, Args&&... args)
+                wformat_string_t<Args...> fmt, Args&&... args)
 {
 	default_logger_raw()->log(source, lvl, fmt,
-				  std::forward<Args>(args)...);
+	                          std::forward<Args>(args)...);
 }
 
 template <typename... Args>
 inline void log(level::level_enum lvl, wformat_string_t<Args...> fmt,
-		Args&&... args)
+                Args&&... args)
 {
 	default_logger_raw()->log(source_loc{}, lvl, fmt,
-				  std::forward<Args>(args)...);
+	                          std::forward<Args>(args)...);
 }
 
 template <typename... Args>
@@ -337,8 +337,8 @@ template <typename T> inline void critical(const T& msg)
 #ifndef SPDLOG_NO_SOURCE_LOC
 #	define SPDLOG_LOGGER_CALL(logger, level, ...)                \
 		(logger)->log(spdlog::source_loc{ __FILE__, __LINE__, \
-						  SPDLOG_FUNCTION },  \
-			      level, __VA_ARGS__)
+		                                  SPDLOG_FUNCTION },  \
+		              level, __VA_ARGS__)
 #else
 #	define SPDLOG_LOGGER_CALL(logger, level, ...) \
 		(logger)->log(spdlog::source_loc{}, level, __VA_ARGS__)
@@ -399,7 +399,7 @@ template <typename T> inline void critical(const T& msg)
 		SPDLOG_LOGGER_CALL(logger, spdlog::level::critical, __VA_ARGS__)
 #	define SPDLOG_CRITICAL(...)                                 \
 		SPDLOG_LOGGER_CRITICAL(spdlog::default_logger_raw(), \
-				       __VA_ARGS__)
+		                       __VA_ARGS__)
 #else
 #	define SPDLOG_LOGGER_CRITICAL(logger, ...) (void) 0
 #	define SPDLOG_CRITICAL(...) (void) 0

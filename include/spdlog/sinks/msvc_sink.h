@@ -52,7 +52,7 @@ template <typename Mutex> class msvc_sink : public base_sink<Mutex> {
 public:
 	msvc_sink() = default;
 	msvc_sink(bool check_debugger_present)
-		: check_debugger_present_{ check_debugger_present } {};
+	        : check_debugger_present_{ check_debugger_present } {};
 
 protected:
 	void sink_it_(const details::log_msg& msg) override
@@ -63,12 +63,12 @@ protected:
 		memory_buf_t formatted;
 		base_sink<Mutex>::formatter_->format(msg, formatted);
 		formatted.push_back(
-			'\0'); // add a null terminator for OutputDebugString
+		        '\0'); // add a null terminator for OutputDebugString
 #	if defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 		wmemory_buf_t wformatted;
 		details::os::utf8_to_wstrbuf(string_view_t(formatted.data(),
-							   formatted.size()),
-					     wformatted);
+		                                           formatted.size()),
+		                             wformatted);
 		OutputDebugStringW(wformatted.data());
 #	else
 		OutputDebugStringA(formatted.data());

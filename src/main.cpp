@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	signal(SIGINT, signal_handle);
 	signal(SIGKILL, signal_handle);
 
-	msql_query query("GET something");
+	msql_query query("GET key_name");
 	query.execute();
 
 	port& port = port::instance(argc, argv);

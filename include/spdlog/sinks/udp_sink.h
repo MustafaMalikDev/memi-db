@@ -47,8 +47,8 @@ struct udp_sink_config {
 	uint16_t    server_port;
 
 	udp_sink_config(std::string host, uint16_t port)
-		: server_host{ std::move(host) }
-		, server_port{ port }
+	        : server_host{ std::move(host) }
+	        , server_port{ port }
 	{
 	}
 };
@@ -58,7 +58,7 @@ class udp_sink : public spdlog::sinks::base_sink<Mutex> {
 public:
 	// host can be hostname or ip address
 	explicit udp_sink(udp_sink_config sink_config)
-		: client_{ sink_config.server_host, sink_config.server_port }
+	        : client_{ sink_config.server_host, sink_config.server_port }
 	{
 	}
 
@@ -69,7 +69,7 @@ protected:
 	{
 		spdlog::memory_buf_t formatted;
 		spdlog::sinks::base_sink<Mutex>::formatter_->format(msg,
-								    formatted);
+		                                                    formatted);
 		client_.send(formatted.data(), formatted.size());
 	}
 
@@ -88,11 +88,11 @@ using udp_sink_st = udp_sink<spdlog::details::null_mutex>;
 // factory functions
 //
 template <typename Factory = spdlog::synchronous_factory>
-inline std::shared_ptr<logger> udp_logger_mt(const std::string&	    logger_name,
-					     sinks::udp_sink_config skin_config)
+inline std::shared_ptr<logger> udp_logger_mt(const std::string&     logger_name,
+                                             sinks::udp_sink_config skin_config)
 {
 	return Factory::template create<sinks::udp_sink_mt>(logger_name,
-							    skin_config);
+	                                                    skin_config);
 }
 
 } // namespace spdlog

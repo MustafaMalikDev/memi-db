@@ -21,15 +21,15 @@
 namespace memi
 {
 
-std::string_view extract_flag(const std::string&		   flag,
-			      const std::vector<std::string_view>& args)
+std::string_view extract_flag(const std::string&                   flag,
+                              const std::vector<std::string_view>& args)
 {
 	MEMI_RETURN_QUICK_IF(flag.empty(), {})
 	MEMI_RETURN_QUICK_IF(args.empty(), {})
 
 	for (size_t i = 0; i < args.size(); i++) {
 		std::string arg(args[i]);
-		size_t	    dash_pos = arg.find("--");
+		size_t      dash_pos = arg.find("--");
 
 		if (dash_pos == std::string::npos) {
 			continue;

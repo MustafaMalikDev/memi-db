@@ -41,7 +41,7 @@ public:
 	~base_sink() override = default;
 
 	base_sink(const base_sink&) = delete;
-	base_sink(base_sink&&)	    = delete;
+	base_sink(base_sink&&)      = delete;
 
 	base_sink& operator=(const base_sink&) = delete;
 	base_sink& operator=(base_sink&&)      = delete;
@@ -55,10 +55,10 @@ public:
 protected:
 	// sink formatter
 	std::unique_ptr<spdlog::formatter> formatter_;
-	Mutex				   mutex_;
+	Mutex                              mutex_;
 
 	virtual void sink_it_(const details::log_msg& msg) = 0;
-	virtual void flush_()				   = 0;
+	virtual void flush_()                              = 0;
 	virtual void set_pattern_(const std::string& pattern);
 	virtual void
 	set_formatter_(std::unique_ptr<spdlog::formatter> sink_formatter);

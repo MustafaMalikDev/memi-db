@@ -38,20 +38,20 @@ namespace sinks
 template <typename Mutex> class syslog_sink : public base_sink<Mutex> {
 public:
 	syslog_sink(std::string ident, int syslog_option, int syslog_facility,
-		    bool enable_formatting)
-		: enable_formatting_{ enable_formatting }
-		, syslog_levels_{ { /* spdlog::level::trace      */ LOG_DEBUG,
-				    /* spdlog::level::debug      */ LOG_DEBUG,
-				    /* spdlog::level::info       */ LOG_INFO,
-				    /* spdlog::level::warn       */ LOG_WARNING,
-				    /* spdlog::level::err        */ LOG_ERR,
-				    /* spdlog::level::critical   */ LOG_CRIT,
-				    /* spdlog::level::off        */ LOG_INFO } }
-		, ident_{ std::move(ident) }
+	            bool enable_formatting)
+	        : enable_formatting_{ enable_formatting }
+	        , syslog_levels_{ { /* spdlog::level::trace      */ LOG_DEBUG,
+		                    /* spdlog::level::debug      */ LOG_DEBUG,
+		                    /* spdlog::level::info       */ LOG_INFO,
+		                    /* spdlog::level::warn       */ LOG_WARNING,
+		                    /* spdlog::level::err        */ LOG_ERR,
+		                    /* spdlog::level::critical   */ LOG_CRIT,
+		                    /* spdlog::level::off        */ LOG_INFO } }
+	        , ident_{ std::move(ident) }
 	{
 		// set ident to be program name if empty
 		::openlog(ident_.empty() ? nullptr : ident_.c_str(),
-			  syslog_option, syslog_facility);
+		          syslog_option, syslog_facility);
 	}
 
 	~syslog_sink() override
@@ -59,7 +59,7 @@ public:
 		::closelog();
 	}
 
-	syslog_sink(const syslog_sink&)		   = delete;
+	syslog_sink(const syslog_sink&)            = delete;
 	syslog_sink& operator=(const syslog_sink&) = delete;
 
 protected:
@@ -70,7 +70,7 @@ protected:
 		if (enable_formatting_) {
 			base_sink<Mutex>::formatter_->format(msg, formatted);
 			payload = string_view_t(formatted.data(),
-						formatted.size());
+			                        formatted.size());
 		} else {
 			payload = msg.payload;
 		}
@@ -80,11 +80,11 @@ protected:
 		if (length >
 		    static_cast<size_t>(std::numeric_limits<int>::max())) {
 			length = static_cast<size_t>(
-				std::numeric_limits<int>::max());
+			        std::numeric_limits<int>::max());
 		}
 
 		::syslog(syslog_prio_from_level(msg), "%.*s",
-			 static_cast<int>(length), payload.data());
+		         static_cast<int>(length), payload.data());
 	}
 
 	void flush_() override
@@ -98,7 +98,7 @@ protected:
 	int syslog_prio_from_level(const details::log_msg& msg) const
 	{
 		return syslog_levels_.at(
-			static_cast<levels_array::size_type>(msg.level));
+		        static_cast<levels_array::size_type>(msg.level));
 	}
 
 private:
@@ -117,22 +117,22 @@ using syslog_sink_st = syslog_sink<details::null_mutex>;
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
 syslog_logger_mt(const std::string& logger_name,
-		 const std::string& syslog_ident = "", int syslog_option = 0,
-		 int syslog_facility = LOG_USER, bool enable_formatting = false)
+                 const std::string& syslog_ident = "", int syslog_option = 0,
+                 int syslog_facility = LOG_USER, bool enable_formatting = false)
 {
 	return Factory::template create<sinks::syslog_sink_mt>(
-		logger_name, syslog_ident, syslog_option, syslog_facility,
-		enable_formatting);
+	        logger_name, syslog_ident, syslog_option, syslog_facility,
+	        enable_formatting);
 }
 
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
 syslog_logger_st(const std::string& logger_name,
-		 const std::string& syslog_ident = "", int syslog_option = 0,
-		 int syslog_facility = LOG_USER, bool enable_formatting = false)
+                 const std::string& syslog_ident = "", int syslog_option = 0,
+                 int syslog_facility = LOG_USER, bool enable_formatting = false)
 {
 	return Factory::template create<sinks::syslog_sink_st>(
-		logger_name, syslog_ident, syslog_option, syslog_facility,
-		enable_formatting);
+	        logger_name, syslog_ident, syslog_option, syslog_facility,
+	        enable_formatting);
 }
 } // namespace spdlog

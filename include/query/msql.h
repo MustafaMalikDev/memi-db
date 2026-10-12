@@ -35,14 +35,30 @@ enum class msql_query_option : uint8_t {
 enum class msql_query_error : uint8_t {
 	QUERY_ERROR_KEY_NOT_FOUND,
 	QUERY_ERROR_KEY_INVALID,
+	QUERY_ERROR_VALUE_NOT_FOUND,
 	QUERY_ERROR_INVALID_OP,
 	QUERY_ERROR_INVALID_SYNTAX,
-	QUERY_ERROR_UNKNOWN
+	QUERY_ERROR_UNKNOWN,
+	QUERY_ERROR_QUERY_OK
 };
 
+typedef struct msql_query_operation_rule {
+	std::string_view op_name;
+	bool             require_key;
+	bool require_kv; /* no need for a value field because key must be set to handle the value */
+
+	static msql_query_operation_rule empty_query() noexcept;
+	static msql_query_operation_rule
+	get_op_from_name(const std::string& str) noexcept;
+
+	bool operator==(const msql_query_operation_rule& other);
+	bool operator!=(const msql_query_operation_rule& other);
+} msql_query_operation_t;
+
 typedef struct msql_query_exec_output {
-	std::string_view key;
-	std::string_view value;
+	std::string      op_name;
+	std::string      key;
+	std::string      value;
 	msql_query_error error_code;
 
 	bool has_output;
@@ -54,6 +70,7 @@ typedef struct msql_query_exec_output {
 class msql_query final {
 public:
 	msql_query(const std::string& raw);
+	msql_query(const std::string&& raw);
 	~msql_query();
 
 	MEMI_NO_COPY_MOVE(msql_query);
@@ -65,7 +82,7 @@ public:
 	MEMI_FORCE_USE msql_query_output_t execute();
 
 private:
-	std::string	    m_raw_query;
+	std::string         m_raw_query;
 	msql_query_output_t m_info;
 	msql_query_option   m_option;
 };

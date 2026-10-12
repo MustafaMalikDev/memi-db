@@ -43,7 +43,7 @@
 #	endif
 #	if (FMT_HAS_INCLUDE(<fcntl.h>) || defined(__APPLE__) || \
 	     defined(__linux__)) &&                              \
-		(!defined(WINAPI_FAMILY) ||                      \
+	        (!defined(WINAPI_FAMILY) ||                      \
 		 (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP))
 #		include <fcntl.h> // for O_RDONLY
 #		define FMT_USE_FCNTL 1
@@ -123,7 +123,7 @@ private:
 public:
 	/** Constructs a string reference object from a C string. */
 	basic_cstring_view(const Char* s)
-		: data_(s)
+	        : data_(s)
 	{
 	}
 
@@ -133,7 +133,7 @@ public:
     \endrst
    */
 	basic_cstring_view(const std::basic_string<Char>& s)
-		: data_(s.c_str())
+	        : data_(s.c_str())
 	{
 	}
 
@@ -156,14 +156,14 @@ template <typename Char> struct formatter<std::error_code, Char> {
 
 	template <typename FormatContext>
 	FMT_CONSTEXPR auto format(const std::error_code& ec,
-				  FormatContext&	 ctx) const
-		-> decltype(ctx.out())
+	                          FormatContext&         ctx) const
+	        -> decltype(ctx.out())
 	{
 		auto out = ctx.out();
-		out	 = detail::write_bytes(out, ec.category().name(),
-					       basic_format_specs<Char>());
-		out	 = detail::write<Char>(out, Char(':'));
-		out	 = detail::write<Char>(out, ec.value());
+		out      = detail::write_bytes(out, ec.category().name(),
+		                               basic_format_specs<Char>());
+		out      = detail::write<Char>(out, Char(':'));
+		out      = detail::write<Char>(out, ec.value());
 		return out;
 	}
 };
@@ -207,11 +207,11 @@ public:
 };
 
 FMT_API void format_windows_error(buffer<char>& out, int error_code,
-				  const char* message) noexcept;
+                                  const char* message) noexcept;
 FMT_END_DETAIL_NAMESPACE
 
 FMT_API std::system_error vwindows_error(int error_code, string_view format_str,
-					 format_args args);
+                                         format_args args);
 
 /**
  \rst
@@ -243,10 +243,10 @@ FMT_API std::system_error vwindows_error(int error_code, string_view format_str,
 */
 template <typename... Args>
 std::system_error windows_error(int error_code, string_view message,
-				const Args&... args)
+                                const Args&... args)
 {
 	return vwindows_error(error_code, message,
-			      fmt::make_format_args(args...));
+	                      fmt::make_format_args(args...));
 }
 
 // Reports a Windows error without throwing an exception.
@@ -276,7 +276,7 @@ private:
 	friend class file;
 
 	explicit buffered_file(FILE* f)
-		: file_(f)
+	        : file_(f)
 	{
 	}
 
@@ -301,7 +301,7 @@ public:
 	buffered_file& operator=(buffered_file&& other)
 	{
 		close();
-		file_	    = other.file_;
+		file_       = other.file_;
 		other.file_ = nullptr;
 		return *this;
 	}
@@ -345,7 +345,7 @@ private:
 
 	// Constructs a file object with a given descriptor.
 	explicit file(int fd)
-		: fd_(fd)
+	        : fd_(fd)
 	{
 	}
 
@@ -356,7 +356,7 @@ public:
 		WRONLY = FMT_POSIX(O_WRONLY), // Open for writing only.
 		RDWR   = FMT_POSIX(O_RDWR),   // Open for reading and writing.
 		CREATE =
-			FMT_POSIX(O_CREAT), // Create if the file doesn't exist.
+		        FMT_POSIX(O_CREAT), // Create if the file doesn't exist.
 		APPEND = FMT_POSIX(O_APPEND), // Open in append mode.
 		TRUNC  = FMT_POSIX(O_TRUNC) // Truncate the content of the file.
 	};
@@ -370,7 +370,7 @@ public:
 	file(cstring_view path, int oflag);
 
 public:
-	file(const file&)	    = delete;
+	file(const file&)           = delete;
 	void operator=(const file&) = delete;
 
 	file(file&& other) noexcept : fd_(other.fd_)
@@ -382,7 +382,7 @@ public:
 	file& operator=(file&& other)
 	{
 		close();
-		fd_	  = other.fd_;
+		fd_       = other.fd_;
 		other.fd_ = -1;
 		return *this;
 	}
@@ -436,18 +436,18 @@ long getpagesize();
 FMT_BEGIN_DETAIL_NAMESPACE
 
 struct buffer_size {
-	buffer_size()	  = default;
-	size_t	    value = 0;
+	buffer_size()     = default;
+	size_t      value = 0;
 	buffer_size operator=(size_t val) const
 	{
-		auto bs	 = buffer_size();
+		auto bs  = buffer_size();
 		bs.value = val;
 		return bs;
 	}
 };
 
 struct ostream_params {
-	int    oflag	   = file::WRONLY | file::CREATE | file::TRUNC;
+	int    oflag       = file::WRONLY | file::CREATE | file::TRUNC;
 	size_t buffer_size = BUFSIZ > 32768 ? BUFSIZ : 32768;
 
 	ostream_params()
@@ -456,14 +456,14 @@ struct ostream_params {
 
 	template <typename... T>
 	ostream_params(T... params, int new_oflag)
-		: ostream_params(params...)
+	        : ostream_params(params...)
 	{
 		oflag = new_oflag;
 	}
 
 	template <typename... T>
 	ostream_params(T... params, detail::buffer_size bs)
-		: ostream_params(params...)
+	        : ostream_params(params...)
 	{
 		this->buffer_size = bs.value;
 	}
@@ -472,11 +472,11 @@ struct ostream_params {
 // for empty parameter packs.
 #	if defined(__INTEL_COMPILER) && __INTEL_COMPILER < 2000
 	ostream_params(int new_oflag)
-		: oflag(new_oflag)
+	        : oflag(new_oflag)
 	{
 	}
 	ostream_params(detail::buffer_size bs)
-		: buffer_size(bs.value)
+	        : buffer_size(bs.value)
 	{
 	}
 #	endif
@@ -496,16 +496,16 @@ private:
 	void grow(size_t) override;
 
 	ostream(cstring_view path, const detail::ostream_params& params)
-		: file_(path, params.oflag)
+	        : file_(path, params.oflag)
 	{
 		set(new char[params.buffer_size], params.buffer_size);
 	}
 
 public:
 	ostream(ostream&& other)
-		: detail::buffer<char>(other.data(), other.size(),
-				       other.capacity())
-		, file_(std::move(other.file_))
+	        : detail::buffer<char>(other.data(), other.size(),
+		                       other.capacity())
+	        , file_(std::move(other.file_))
 	{
 		other.clear();
 		other.set(nullptr, 0);
@@ -541,7 +541,7 @@ public:
 	void print(format_string<T...> fmt, T&&... args)
 	{
 		vformat_to(detail::buffer_appender<char>(*this), fmt,
-			   fmt::make_format_args(args...));
+		           fmt::make_format_args(args...));
 	}
 };
 

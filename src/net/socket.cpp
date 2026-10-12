@@ -26,8 +26,8 @@
 #include <iostream>
 
 static std::vector<int> g_sockfds;
-static bool		g_signal_invoked = false;
-extern void		signal_handle(int signal);
+static bool             g_signal_invoked = false;
+extern void             signal_handle(int signal);
 
 void signal_handle(int signal)
 {
@@ -48,9 +48,9 @@ namespace memi
 {
 
 socket::socket(uint16_t port, uint16_t maxbuf, uint8_t max_queue)
-	: m_port(port)
-	, m_maxbuf(maxbuf)
-	, m_max_queue(max_queue)
+        : m_port(port)
+        , m_maxbuf(maxbuf)
+        , m_max_queue(max_queue)
 {
 	memset(&m_server_addr, 0, sizeof(m_server_addr));
 }
@@ -63,7 +63,7 @@ socket::~socket()
 bool socket::is_port_available()
 {
 	struct sockaddr_in server_addr;
-	int		   sock_fd;
+	int                sock_fd;
 
 	if ((sock_fd = ::socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		return false;
@@ -71,12 +71,12 @@ bool socket::is_port_available()
 
 	memset(&server_addr, 0, sizeof(server_addr));
 
-	server_addr.sin_family	    = AF_INET;
+	server_addr.sin_family      = AF_INET;
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	server_addr.sin_port	    = htons(m_port);
+	server_addr.sin_port        = htons(m_port);
 
 	if (bind(sock_fd, (struct sockaddr*) &server_addr,
-		 sizeof(server_addr)) == -1) {
+	         sizeof(server_addr)) == -1) {
 		close(sock_fd);
 		return false;
 	}
@@ -88,10 +88,10 @@ bool socket::is_port_available()
 void socket::start()
 {
 	if (m_port == MEMIDB_DEFAULT_PORT) {
-		int  max_limit	   = std::numeric_limits<uint16_t>::max();
-		int  max_tries	   = 4;
+		int  max_limit     = std::numeric_limits<uint16_t>::max();
+		int  max_tries     = 4;
 		int  current_tries = 0;
-		bool is_avail	   = false;
+		bool is_avail      = false;
 
 		do {
 			is_avail = is_port_available();
@@ -109,8 +109,8 @@ void socket::start()
 
 		if (!is_avail) {
 			spdlog::error(
-				"could not start server. port {} is busy and all port options are exhausted.",
-				m_port);
+			        "could not start server. port {} is busy and all port options are exhausted.",
+			        m_port);
 			std::exit(EXIT_FAILURE);
 		}
 	}
@@ -124,10 +124,10 @@ void socket::start()
 
 	m_server_addr.sin_family      = AF_INET;
 	m_server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	m_server_addr.sin_port	      = htons(m_port);
+	m_server_addr.sin_port        = htons(m_port);
 
 	if ((m_bindfd = bind(m_sockfd, (const sockaddr*) &m_server_addr,
-			     sizeof(m_server_addr))) == -1) {
+	                     sizeof(m_server_addr))) == -1) {
 		spdlog::error("could not bind socket. abort.");
 		close(m_sockfd);
 		std::exit(EXIT_FAILURE);
@@ -153,7 +153,7 @@ void socket::start()
 		}
 
 		if ((clientfd = accept(m_sockfd, (struct sockaddr*) nullptr,
-				       nullptr)) == -1) {
+		                       nullptr)) == -1) {
 			continue;
 		}
 
@@ -180,10 +180,10 @@ void socket::cleanup()
 		memset(&m_server_addr, 0, sizeof(m_server_addr));
 
 		g_sockfds.erase(
-			std::remove_if(g_sockfds.begin(), g_sockfds.end(),
-				       [&](int sockfd) -> bool {
-					       return sockfd == m_sockfd;
-				       }));
+		        std::remove_if(g_sockfds.begin(), g_sockfds.end(),
+			               [&](int sockfd) -> bool {
+			                       return sockfd == m_sockfd;
+		                       }));
 
 		m_sockfd  = -1;
 		m_bindfd  = -1;

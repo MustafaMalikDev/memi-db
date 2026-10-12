@@ -42,7 +42,7 @@ template <typename T> class mpmc_blocking_queue {
 public:
 	using item_type = T;
 	explicit mpmc_blocking_queue(size_t max_items)
-		: q_(max_items)
+	        : q_(max_items)
 	{
 	}
 
@@ -88,8 +88,8 @@ public:
 
 	// dequeue with a timeout.
 	// Return true, if succeeded dequeue item, false otherwise
-	bool dequeue_for(T&			   popped_item,
-			 std::chrono::milliseconds wait_duration)
+	bool dequeue_for(T&                        popped_item,
+	                 std::chrono::milliseconds wait_duration)
 	{
 		{
 			std::unique_lock<std::mutex> lock(queue_mutex_);
@@ -111,7 +111,7 @@ public:
 		{
 			std::unique_lock<std::mutex> lock(queue_mutex_);
 			push_cv_.wait(lock,
-				      [this] { return !this->q_.empty(); });
+			              [this] { return !this->q_.empty(); });
 			popped_item = std::move(q_.front());
 			q_.pop_front();
 		}
@@ -141,7 +141,7 @@ public:
 
 	void enqueue_if_have_room(T&& item)
 	{
-		bool			     pushed = false;
+		bool                         pushed = false;
 		std::unique_lock<std::mutex> lock(queue_mutex_);
 		if (!q_.full()) {
 			q_.push_back(std::move(item));
@@ -157,12 +157,12 @@ public:
 
 	// dequeue with a timeout.
 	// Return true, if succeeded dequeue item, false otherwise
-	bool dequeue_for(T&			   popped_item,
-			 std::chrono::milliseconds wait_duration)
+	bool dequeue_for(T&                        popped_item,
+	                 std::chrono::milliseconds wait_duration)
 	{
 		std::unique_lock<std::mutex> lock(queue_mutex_);
 		if (!push_cv_.wait_for(lock, wait_duration,
-				       [this] { return !this->q_.empty(); })) {
+		                       [this] { return !this->q_.empty(); })) {
 			return false;
 		}
 		popped_item = std::move(q_.front());
@@ -212,11 +212,11 @@ public:
 	}
 
 private:
-	std::mutex		       queue_mutex_;
-	std::condition_variable	       push_cv_;
-	std::condition_variable	       pop_cv_;
+	std::mutex                     queue_mutex_;
+	std::condition_variable        push_cv_;
+	std::condition_variable        pop_cv_;
 	spdlog::details::circular_q<T> q_;
-	std::atomic<size_t>	       discard_counter_{ 0 };
+	std::atomic<size_t>            discard_counter_{ 0 };
 };
 } // namespace details
 } // namespace spdlog

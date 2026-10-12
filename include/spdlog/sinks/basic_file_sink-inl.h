@@ -34,9 +34,9 @@ namespace sinks
 
 template <typename Mutex>
 SPDLOG_INLINE basic_file_sink<Mutex>::basic_file_sink(
-	const filename_t& filename, bool truncate,
-	const file_event_handlers& event_handlers)
-	: file_helper_{ event_handlers }
+        const filename_t& filename, bool truncate,
+        const file_event_handlers& event_handlers)
+        : file_helper_{ event_handlers }
 {
 	file_helper_.open(filename, truncate);
 }

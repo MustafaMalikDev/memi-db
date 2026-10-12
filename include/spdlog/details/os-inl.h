@@ -41,7 +41,7 @@
 #ifdef _WIN32
 #	include <spdlog/details/windows_include.h>
 #	include <fileapi.h> // for FlushFileBuffers
-#	include <io.h>	     // for _get_osfhandle, _isatty, _fileno
+#	include <io.h>      // for _get_osfhandle, _isatty, _fileno
 #	include <process.h> // for _get_pid
 
 #	ifdef __MINGW32__
@@ -49,7 +49,7 @@
 #	endif
 
 #	if defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || \
-		defined(SPDLOG_WCHAR_FILENAMES)
+	        defined(SPDLOG_WCHAR_FILENAMES)
 #		include <cassert>
 #		include <limits>
 #	endif
@@ -83,7 +83,7 @@
 #	include <AvailabilityMacros.h>
 #endif
 
-#ifndef __has_feature		   // Clang - feature checking macros.
+#ifndef __has_feature              // Clang - feature checking macros.
 #	define __has_feature(x) 0 // Compatibility with non-clang compilers.
 #endif
 
@@ -100,9 +100,9 @@ SPDLOG_INLINE spdlog::log_clock::time_point now() SPDLOG_NOEXCEPT
 	timespec ts;
 	::clock_gettime(CLOCK_REALTIME_COARSE, &ts);
 	return std::chrono::time_point<log_clock, typename log_clock::duration>(
-		std::chrono::duration_cast<typename log_clock::duration>(
-			std::chrono::seconds(ts.tv_sec) +
-			std::chrono::nanoseconds(ts.tv_nsec)));
+	        std::chrono::duration_cast<typename log_clock::duration>(
+	                std::chrono::seconds(ts.tv_sec) +
+	                std::chrono::nanoseconds(ts.tv_nsec)));
 
 #else
 	return log_clock::now();
@@ -146,7 +146,7 @@ SPDLOG_INLINE std::tm gmtime() SPDLOG_NOEXCEPT
 
 // fopen_s on non windows for writing
 SPDLOG_INLINE bool fopen_s(FILE** fp, const filename_t& filename,
-			   const filename_t& mode)
+                           const filename_t& mode)
 {
 #ifdef _WIN32
 #	ifdef SPDLOG_WCHAR_FILENAMES
@@ -157,9 +157,9 @@ SPDLOG_INLINE bool fopen_s(FILE** fp, const filename_t& filename,
 #	if defined(SPDLOG_PREVENT_CHILD_FD)
 	if (*fp != nullptr) {
 		auto file_handle = reinterpret_cast<HANDLE>(
-			_get_osfhandle(::_fileno(*fp)));
+		        _get_osfhandle(::_fileno(*fp)));
 		if (!::SetHandleInformation(file_handle, HANDLE_FLAG_INHERIT,
-					    0)) {
+		                            0)) {
 			::fclose(*fp);
 			*fp = nullptr;
 		}
@@ -168,10 +168,10 @@ SPDLOG_INLINE bool fopen_s(FILE** fp, const filename_t& filename,
 #else // unix
 #	if defined(SPDLOG_PREVENT_CHILD_FD)
 	const int mode_flag = mode == SPDLOG_FILENAME_T("ab") ? O_APPEND :
-								O_TRUNC;
-	const int fd	    = ::open((filename.c_str()),
-				     O_CREAT | O_WRONLY | O_CLOEXEC | mode_flag,
-				     mode_t(0644));
+	                                                        O_TRUNC;
+	const int fd        = ::open((filename.c_str()),
+	                             O_CREAT | O_WRONLY | O_CLOEXEC | mode_flag,
+	                             mode_t(0644));
 	if (fd == -1) {
 		return true;
 	}
@@ -202,7 +202,7 @@ SPDLOG_INLINE int remove_if_exists(const filename_t& filename) SPDLOG_NOEXCEPT
 }
 
 SPDLOG_INLINE int rename(const filename_t& filename1,
-			 const filename_t& filename2) SPDLOG_NOEXCEPT
+                         const filename_t& filename2) SPDLOG_NOEXCEPT
 {
 #if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
 	return ::_wrename(filename1.c_str(), filename2.c_str());
@@ -264,7 +264,7 @@ SPDLOG_INLINE size_t filesize(FILE* f)
 // 64 bits(but not in osx, linux/musl or cygwin, where fstat64 is deprecated)
 #	if ((defined(__linux__) && defined(__GLIBC__)) || defined(__sun) || \
 	     defined(_AIX)) &&                                               \
-		(defined(__LP64__) || defined(_LP64))
+	        (defined(__LP64__) || defined(_LP64))
 	struct stat64 st;
 	if (::fstat64(fd, &st) == 0) {
 		return static_cast<size_t>(st.st_size);
@@ -290,7 +290,7 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm& tm)
 #ifdef _WIN32
 #	if _WIN32_WINNT < _WIN32_WINNT_WS08
 	TIME_ZONE_INFORMATION tzinfo;
-	auto		      rv = ::GetTimeZoneInformation(&tzinfo);
+	auto                  rv = ::GetTimeZoneInformation(&tzinfo);
 #	else
 	DYNAMIC_TIME_ZONE_INFORMATION tzinfo;
 	auto rv = ::GetDynamicTimeZoneInformation(&tzinfo);
@@ -308,38 +308,38 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm& tm)
 #else
 
 #	if defined(sun) || defined(__sun) || defined(_AIX) ||    \
-		(defined(__NEWLIB__) && !defined(__TM_GMTOFF)) || \
-		(!defined(_BSD_SOURCE) && !defined(_GNU_SOURCE))
+	        (defined(__NEWLIB__) && !defined(__TM_GMTOFF)) || \
+	        (!defined(_BSD_SOURCE) && !defined(_GNU_SOURCE))
 	// 'tm_gmtoff' field is BSD extension and it's missing on SunOS/Solaris
 	struct helper {
 		static long int calculate_gmt_offset(
-			const std::tm& localtm = details::os::localtime(),
-			const std::tm& gmtm    = details::os::gmtime())
+		        const std::tm& localtm = details::os::localtime(),
+		        const std::tm& gmtm    = details::os::gmtime())
 		{
 			int local_year = localtm.tm_year + (1900 - 1);
 			int gmt_year   = gmtm.tm_year + (1900 - 1);
 
 			long int days = (
-				// difference in day of year
-				localtm.tm_yday -
-				gmtm.tm_yday
+			        // difference in day of year
+			        localtm.tm_yday -
+			        gmtm.tm_yday
 
-				// + intervening leap days
-				+ ((local_year >> 2) - (gmt_year >> 2)) -
-				(local_year / 100 - gmt_year / 100) +
-				((local_year / 100 >> 2) -
-				 (gmt_year / 100 >> 2))
+			        // + intervening leap days
+			        + ((local_year >> 2) - (gmt_year >> 2)) -
+			        (local_year / 100 - gmt_year / 100) +
+			        ((local_year / 100 >> 2) -
+			         (gmt_year / 100 >> 2))
 
-				// + difference in years * 365 */
-				+ static_cast<long int>(local_year - gmt_year) *
-					  365);
+			        // + difference in years * 365 */
+			        + static_cast<long int>(local_year - gmt_year) *
+			                  365);
 
 			long int hours =
-				(24 * days) + (localtm.tm_hour - gmtm.tm_hour);
+			        (24 * days) + (localtm.tm_hour - gmtm.tm_hour);
 			long int mins =
-				(60 * hours) + (localtm.tm_min - gmtm.tm_min);
+			        (60 * hours) + (localtm.tm_min - gmtm.tm_min);
 			long int secs =
-				(60 * mins) + (localtm.tm_sec - gmtm.tm_sec);
+			        (60 * mins) + (localtm.tm_sec - gmtm.tm_sec);
 
 			return secs;
 		}
@@ -363,17 +363,17 @@ SPDLOG_INLINE size_t _thread_id() SPDLOG_NOEXCEPT
 	return static_cast<size_t>(::GetCurrentThreadId());
 #elif defined(__linux__)
 #	if defined(__ANDROID__) && defined(__ANDROID_API__) && \
-		(__ANDROID_API__ < 21)
+	        (__ANDROID_API__ < 21)
 #		define SYS_gettid __NR_gettid
 #	endif
 	return static_cast<size_t>(::syscall(SYS_gettid));
 #elif defined(_AIX)
 	struct __pthrdsinfo buf;
-	int		    reg_size = 0;
-	pthread_t	    pt	     = pthread_self();
+	int                 reg_size = 0;
+	pthread_t           pt       = pthread_self();
 	int retval = pthread_getthrds_np(&pt, PTHRDSINFO_QUERY_TID, &buf,
-					 sizeof(buf), NULL, &reg_size);
-	int tid	   = (!retval) ? buf.__pi_tid : 0;
+	                                 sizeof(buf), NULL, &reg_size);
+	int tid    = (!retval) ? buf.__pi_tid : 0;
 	return static_cast<size_t>(tid);
 #elif defined(__DragonFly__) || defined(__FreeBSD__)
 	return static_cast<size_t>(::pthread_getthreadid_np());
@@ -390,7 +390,7 @@ SPDLOG_INLINE size_t _thread_id() SPDLOG_NOEXCEPT
 #	ifdef MAC_OS_X_VERSION_MAX_ALLOWED
 	{
 #		if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060) || \
-			defined(__POWERPC__)
+		        defined(__POWERPC__)
 		tid = pthread_mach_thread_np(pthread_self());
 #		elif MAC_OS_X_VERSION_MIN_REQUIRED < 1060
 		if (&pthread_threadid_np) {
@@ -408,7 +408,7 @@ SPDLOG_INLINE size_t _thread_id() SPDLOG_NOEXCEPT
 	return static_cast<size_t>(tid);
 #else // Default to standard C++11 (other Unix)
 	return static_cast<size_t>(
-		std::hash<std::thread::id>()(std::this_thread::get_id()));
+	        std::hash<std::thread::id>()(std::this_thread::get_id()));
 #endif
 }
 
@@ -484,9 +484,9 @@ SPDLOG_INLINE bool is_color_terminal() SPDLOG_NOEXCEPT
 		}
 
 		return std::any_of(
-			terms.begin(), terms.end(), [&](const char* term) {
-				return std::strstr(env_term_p, term) != nullptr;
-			});
+		        terms.begin(), terms.end(), [&](const char* term) {
+			        return std::strstr(env_term_p, term) != nullptr;
+		        });
 	}();
 
 	return result;
@@ -506,13 +506,13 @@ SPDLOG_INLINE bool in_terminal(FILE* file) SPDLOG_NOEXCEPT
 
 #if (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || \
      defined(SPDLOG_WCHAR_FILENAMES)) &&      \
-	defined(_WIN32)
+        defined(_WIN32)
 SPDLOG_INLINE void wstr_to_utf8buf(wstring_view_t wstr, memory_buf_t& target)
 {
 	if (wstr.size() >
 	    static_cast<size_t>((std::numeric_limits<int>::max)()) / 4 - 1) {
 		throw_spdlog_ex(
-			"UTF-16 string is too big to be converted to UTF-8");
+		        "UTF-16 string is too big to be converted to UTF-8");
 	}
 
 	int wstr_size = static_cast<int>(wstr.size());
@@ -524,15 +524,15 @@ SPDLOG_INLINE void wstr_to_utf8buf(wstring_view_t wstr, memory_buf_t& target)
 	int result_size = static_cast<int>(target.capacity());
 	if ((wstr_size + 1) * 4 > result_size) {
 		result_size = ::WideCharToMultiByte(CP_UTF8, 0, wstr.data(),
-						    wstr_size, NULL, 0, NULL,
-						    NULL);
+		                                    wstr_size, NULL, 0, NULL,
+		                                    NULL);
 	}
 
 	if (result_size > 0) {
 		target.resize(result_size);
 		result_size = ::WideCharToMultiByte(CP_UTF8, 0, wstr.data(),
-						    wstr_size, target.data(),
-						    result_size, NULL, NULL);
+		                                    wstr_size, target.data(),
+		                                    result_size, NULL, NULL);
 
 		if (result_size > 0) {
 			target.resize(result_size);
@@ -541,8 +541,8 @@ SPDLOG_INLINE void wstr_to_utf8buf(wstring_view_t wstr, memory_buf_t& target)
 	}
 
 	throw_spdlog_ex(
-		fmt_lib::format("WideCharToMultiByte failed. Last error: {}",
-				::GetLastError()));
+	        fmt_lib::format("WideCharToMultiByte failed. Last error: {}",
+		                ::GetLastError()));
 }
 
 SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, wmemory_buf_t& target)
@@ -550,7 +550,7 @@ SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, wmemory_buf_t& target)
 	if (str.size() >
 	    static_cast<size_t>((std::numeric_limits<int>::max)()) - 1) {
 		throw_spdlog_ex(
-			"UTF-8 string is too big to be converted to UTF-16");
+		        "UTF-8 string is too big to be converted to UTF-16");
 	}
 
 	int str_size = static_cast<int>(str.size());
@@ -561,14 +561,14 @@ SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, wmemory_buf_t& target)
 
 	// find the size to allocate for the result buffer
 	int result_size = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
-						str.data(), str_size, NULL, 0);
+	                                        str.data(), str_size, NULL, 0);
 
 	if (result_size > 0) {
 		target.resize(result_size);
 		result_size = ::MultiByteToWideChar(CP_UTF8,
-						    MB_ERR_INVALID_CHARS,
-						    str.data(), str_size,
-						    target.data(), result_size);
+		                                    MB_ERR_INVALID_CHARS,
+		                                    str.data(), str_size,
+		                                    target.data(), result_size);
 		if (result_size > 0) {
 			assert(result_size == target.size());
 			return;
@@ -576,8 +576,8 @@ SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, wmemory_buf_t& target)
 	}
 
 	throw_spdlog_ex(
-		fmt_lib::format("MultiByteToWideChar failed. Last error: {}",
-				::GetLastError()));
+	        fmt_lib::format("MultiByteToWideChar failed. Last error: {}",
+		                ::GetLastError()));
 }
 #endif // (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) &&
 // defined(_WIN32)
@@ -611,7 +611,7 @@ SPDLOG_INLINE bool create_dir(const filename_t& path)
 	size_t search_offset = 0;
 	do {
 		auto token_pos =
-			path.find_first_of(folder_seps_filename, search_offset);
+		        path.find_first_of(folder_seps_filename, search_offset);
 		// treat the entire path as a folder if no folder separator not found
 		if (token_pos == filename_t::npos) {
 			token_pos = path.size();
@@ -663,7 +663,7 @@ SPDLOG_INLINE bool fsync(FILE* fp)
 {
 #ifdef _WIN32
 	return FlushFileBuffers(reinterpret_cast<HANDLE>(
-		       _get_osfhandle(_fileno(fp)))) != 0;
+	               _get_osfhandle(_fileno(fp)))) != 0;
 #else
 	return ::fsync(fileno(fp)) == 0;
 #endif

@@ -46,7 +46,7 @@ namespace details
 
 class udp_client {
 	static constexpr int TX_BUFFER_SIZE = 1024 * 10;
-	int		     socket_	    = -1;
+	int                  socket_        = -1;
 	struct sockaddr_in   sockAddr_;
 
 	void cleanup_()
@@ -67,8 +67,8 @@ public:
 
 		int option_value = TX_BUFFER_SIZE;
 		if (::setsockopt(socket_, SOL_SOCKET, SO_SNDBUF,
-				 reinterpret_cast<const char*>(&option_value),
-				 sizeof(option_value)) < 0) {
+		                 reinterpret_cast<const char*>(&option_value),
+		                 sizeof(option_value)) < 0) {
 			cleanup_();
 			throw_spdlog_ex("error: setsockopt(SO_SNDBUF) Failed!");
 		}
@@ -98,10 +98,10 @@ public:
 	// On error close the connection and throw.
 	void send(const char* data, size_t n_bytes)
 	{
-		ssize_t	  toslen = 0;
-		socklen_t tolen	 = sizeof(struct sockaddr);
+		ssize_t   toslen = 0;
+		socklen_t tolen  = sizeof(struct sockaddr);
 		if ((toslen = ::sendto(socket_, data, n_bytes, 0,
-				       (struct sockaddr*) &sockAddr_, tolen)) ==
+		                       (struct sockaddr*) &sockAddr_, tolen)) ==
 		    -1) {
 			throw_spdlog_ex("sendto(2) failed", errno);
 		}

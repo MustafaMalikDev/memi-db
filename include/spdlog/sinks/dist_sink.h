@@ -42,11 +42,11 @@ template <typename Mutex> class dist_sink : public base_sink<Mutex> {
 public:
 	dist_sink() = default;
 	explicit dist_sink(std::vector<std::shared_ptr<sink> > sinks)
-		: sinks_(sinks)
+	        : sinks_(sinks)
 	{
 	}
 
-	dist_sink(const dist_sink&)	       = delete;
+	dist_sink(const dist_sink&)            = delete;
 	dist_sink& operator=(const dist_sink&) = delete;
 
 	void add_sink(std::shared_ptr<sink> sub_sink)
@@ -59,8 +59,8 @@ public:
 	{
 		std::lock_guard<Mutex> lock(base_sink<Mutex>::mutex_);
 		sinks_.erase(std::remove(sinks_.begin(), sinks_.end(),
-					 sub_sink),
-			     sinks_.end());
+		                         sub_sink),
+		             sinks_.end());
 	}
 
 	void set_sinks(std::vector<std::shared_ptr<sink> > sinks)
@@ -94,16 +94,16 @@ protected:
 	void set_pattern_(const std::string& pattern) override
 	{
 		set_formatter_(details::make_unique<spdlog::pattern_formatter>(
-			pattern));
+		        pattern));
 	}
 
 	void set_formatter_(
-		std::unique_ptr<spdlog::formatter> sink_formatter) override
+	        std::unique_ptr<spdlog::formatter> sink_formatter) override
 	{
 		base_sink<Mutex>::formatter_ = std::move(sink_formatter);
 		for (auto& sub_sink : sinks_) {
 			sub_sink->set_formatter(
-				base_sink<Mutex>::formatter_->clone());
+			        base_sink<Mutex>::formatter_->clone());
 		}
 	}
 	std::vector<std::shared_ptr<sink> > sinks_;

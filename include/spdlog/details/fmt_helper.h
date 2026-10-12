@@ -49,7 +49,7 @@ template <typename T> inline void append_int(T n, memory_buf_t& dest)
 {
 	// Buffer should be large enough to hold all digits (digits10 + 1) and a sign
 	SPDLOG_CONSTEXPR const auto BUF_SIZE =
-		std::numeric_limits<T>::digits10 + 2;
+	        std::numeric_limits<T>::digits10 + 2;
 	char buf[BUF_SIZE];
 
 	auto [ptr, ec] = std::to_chars(buf, buf + BUF_SIZE, n, 10);
@@ -92,21 +92,21 @@ SPDLOG_CONSTEXPR_FUNC unsigned int count_digits_fallback(T n)
 template <typename T> inline unsigned int count_digits(T n)
 {
 	using count_type =
-		typename std::conditional<(sizeof(T) > sizeof(uint32_t)),
-					  uint64_t, uint32_t>::type;
+	        typename std::conditional<(sizeof(T) > sizeof(uint32_t)),
+		                          uint64_t, uint32_t>::type;
 #ifdef SPDLOG_USE_STD_FORMAT
 	return count_digits_fallback(static_cast<count_type>(n));
 #else
 	return static_cast<unsigned int>(
-		fmt::
+	        fmt::
 // fmt 7.0.0 renamed the internal namespace to detail.
 // See: https://github.com/fmtlib/fmt/issues/1538
 #	if FMT_VERSION < 70000
-			internal
+	                internal
 #	else
-			detail
+	                detail
 #	endif
-		::count_digits(static_cast<count_type>(n)));
+	        ::count_digits(static_cast<count_type>(n)));
 #endif
 }
 
@@ -119,7 +119,7 @@ inline void pad2(int n, memory_buf_t& dest)
 	} else // unlikely, but just in case, let fmt deal with it
 	{
 		fmt_lib::format_to(std::back_inserter(dest),
-				   SPDLOG_FMT_STRING("{:02}"), n);
+		                   SPDLOG_FMT_STRING("{:02}"), n);
 	}
 }
 
@@ -127,7 +127,7 @@ template <typename T>
 inline void pad_uint(T n, unsigned int width, memory_buf_t& dest)
 {
 	static_assert(std::is_unsigned<T>::value,
-		      "pad_uint must get unsigned T");
+	              "pad_uint must get unsigned T");
 	for (auto digits = count_digits(n); digits < width; digits++) {
 		dest.push_back('0');
 	}

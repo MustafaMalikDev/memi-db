@@ -78,7 +78,7 @@ struct local_alloc_t {
 	{
 	}
 
-	local_alloc_t(local_alloc_t const&)	       = delete;
+	local_alloc_t(local_alloc_t const&)            = delete;
 	local_alloc_t& operator=(local_alloc_t const&) = delete;
 
 	~local_alloc_t() SPDLOG_NOEXCEPT
@@ -93,31 +93,31 @@ struct local_alloc_t {
 struct win32_error : public spdlog_ex {
 	/** Formats an error report line: "user-message: error-code (system message)" */
 	static std::string format(std::string const& user_message,
-				  DWORD error_code = GetLastError())
+	                          DWORD error_code = GetLastError())
 	{
 		std::string system_message;
 
 		local_alloc_t format_message_result{};
-		auto	      format_message_succeeded = ::FormatMessageA(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-				FORMAT_MESSAGE_FROM_SYSTEM |
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-			nullptr, error_code,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPSTR) &format_message_result.hlocal_, 0, nullptr);
+		auto          format_message_succeeded = ::FormatMessageA(
+		        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		                FORMAT_MESSAGE_FROM_SYSTEM |
+		                FORMAT_MESSAGE_IGNORE_INSERTS,
+		        nullptr, error_code,
+		        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		        (LPSTR) &format_message_result.hlocal_, 0, nullptr);
 
 		if (format_message_succeeded && format_message_result.hlocal_) {
 			system_message = fmt_lib::format(
-				" ({})", (LPSTR) format_message_result.hlocal_);
+			        " ({})", (LPSTR) format_message_result.hlocal_);
 		}
 
 		return fmt_lib::format("{}: {}{}", user_message, error_code,
-				       system_message);
+		                       system_message);
 	}
 
 	explicit win32_error(std::string const& func_name,
-			     DWORD		error = GetLastError())
-		: spdlog_ex(format(func_name, error))
+	                     DWORD              error = GetLastError())
+	        : spdlog_ex(format(func_name, error))
 	{
 	}
 };
@@ -164,9 +164,9 @@ public:
 			explicit process_token_t(HANDLE process)
 			{
 				if (!::OpenProcessToken(process, TOKEN_QUERY,
-							&token_handle_)) {
+				                        &token_handle_)) {
 					SPDLOG_THROW(win32_error(
-						"OpenProcessToken"));
+					        "OpenProcessToken"));
 				}
 			}
 
@@ -176,28 +176,28 @@ public:
 			}
 
 		} current_process_token(
-			::GetCurrentProcess()); // GetCurrentProcess returns pseudohandle, no leak here!
+		        ::GetCurrentProcess()); // GetCurrentProcess returns pseudohandle, no leak here!
 
 		// Get the required size, this is expected to fail with ERROR_INSUFFICIENT_BUFFER and return
 		// the token size
 		DWORD tusize = 0;
 		if (::GetTokenInformation(current_process_token.token_handle_,
-					  TokenUser, NULL, 0, &tusize)) {
+		                          TokenUser, NULL, 0, &tusize)) {
 			SPDLOG_THROW(
-				win32_error("GetTokenInformation should fail"));
+			        win32_error("GetTokenInformation should fail"));
 		}
 
 		// get user token
 		std::vector<unsigned char> buffer(static_cast<size_t>(tusize));
 		if (!::GetTokenInformation(current_process_token.token_handle_,
-					   TokenUser, (LPVOID) buffer.data(),
-					   tusize, &tusize)) {
+		                           TokenUser, (LPVOID) buffer.data(),
+		                           tusize, &tusize)) {
 			SPDLOG_THROW(win32_error("GetTokenInformation"));
 		}
 
 		// create a wrapper of the SID data as stored in the user token
 		return sid_t::duplicate_sid(
-			((TOKEN_USER*) buffer.data())->User.Sid);
+		        ((TOKEN_USER*) buffer.data())->User.Sid);
 	}
 };
 
@@ -238,20 +238,20 @@ struct eventlog {
  */
 template <typename Mutex> class win_eventlog_sink : public base_sink<Mutex> {
 private:
-	HANDLE		hEventLog_{ NULL };
+	HANDLE          hEventLog_{ NULL };
 	internal::sid_t current_user_sid_;
-	std::string	source_;
-	DWORD		event_id_;
+	std::string     source_;
+	DWORD           event_id_;
 
 	HANDLE event_log_handle()
 	{
 		if (!hEventLog_) {
 			hEventLog_ = ::RegisterEventSourceA(nullptr,
-							    source_.c_str());
+			                                    source_.c_str());
 			if (!hEventLog_ ||
 			    hEventLog_ == (HANDLE) ERROR_ACCESS_DENIED) {
 				SPDLOG_THROW(internal::win32_error(
-					"RegisterEventSource"));
+				        "RegisterEventSource"));
 			}
 		}
 
@@ -263,7 +263,7 @@ protected:
 	{
 		using namespace internal;
 
-		bool	     succeeded;
+		bool         succeeded;
 		memory_buf_t formatted;
 		base_sink<Mutex>::formatter_->format(msg, formatted);
 		formatted.push_back('\0');
@@ -271,19 +271,19 @@ protected:
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
 		wmemory_buf_t buf;
 		details::os::utf8_to_wstrbuf(
-			string_view_t(formatted.data(), formatted.size()), buf);
+		        string_view_t(formatted.data(), formatted.size()), buf);
 
 		LPCWSTR lp_wstr = buf.data();
-		succeeded	= static_cast<bool>(::ReportEventW(
-			event_log_handle(), eventlog::get_event_type(msg),
-			eventlog::get_event_category(msg), event_id_,
-			current_user_sid_.as_sid(), 1, 0, &lp_wstr, nullptr));
+		succeeded       = static_cast<bool>(::ReportEventW(
+		        event_log_handle(), eventlog::get_event_type(msg),
+		        eventlog::get_event_category(msg), event_id_,
+		        current_user_sid_.as_sid(), 1, 0, &lp_wstr, nullptr));
 #else
 		LPCSTR lp_str = formatted.data();
 		succeeded     = static_cast<bool>(::ReportEventA(
-			event_log_handle(), eventlog::get_event_type(msg),
-			eventlog::get_event_category(msg), event_id_,
-			current_user_sid_.as_sid(), 1, 0, &lp_str, nullptr));
+		        event_log_handle(), eventlog::get_event_type(msg),
+		        eventlog::get_event_category(msg), event_id_,
+		        current_user_sid_.as_sid(), 1, 0, &lp_str, nullptr));
 #endif
 
 		if (!succeeded) {
@@ -297,13 +297,13 @@ protected:
 
 public:
 	win_eventlog_sink(std::string const& source,
-			  DWORD event_id = 1000 /* according to mscoree.dll */)
-		: source_(source)
-		, event_id_(event_id)
+	                  DWORD event_id = 1000 /* according to mscoree.dll */)
+	        : source_(source)
+	        , event_id_(event_id)
 	{
 		try {
 			current_user_sid_ =
-				internal::sid_t::get_current_user_sid();
+			        internal::sid_t::get_current_user_sid();
 		} catch (...) {
 			// get_current_user_sid() is unlikely to fail and if it does, we can still proceed
 			// without current_user_sid but in the event log the record will have no user name
@@ -321,7 +321,7 @@ public:
 
 using win_eventlog_sink_mt = win_eventlog::win_eventlog_sink<std::mutex>;
 using win_eventlog_sink_st =
-	win_eventlog::win_eventlog_sink<details::null_mutex>;
+        win_eventlog::win_eventlog_sink<details::null_mutex>;
 
 } // namespace sinks
 } // namespace spdlog

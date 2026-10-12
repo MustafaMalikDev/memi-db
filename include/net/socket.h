@@ -36,18 +36,18 @@ public:
 
 public:
 	MEMI_FORCE_USE bool is_port_available();
-	void		    start();
-	void		    cleanup();
+	void                start();
+	void                cleanup();
 
 private:
 	struct sockaddr_in m_server_addr;
 
-	int	 m_sockfd{ -1 };
-	int	 m_bindfd{ -1 };
+	int      m_sockfd{ -1 };
+	int      m_bindfd{ -1 };
 	uint16_t m_port{ 0 };
 	uint16_t m_maxbuf{ MEMI_DEFAULT_SOCK_BUF };
-	uint8_t	 m_max_queue{ MEMI_DEFAULT_SOCK_QUEUE };
-	bool	 m_running{ false };
+	uint8_t  m_max_queue{ MEMI_DEFAULT_SOCK_QUEUE };
+	bool     m_running{ false };
 };
 
 }

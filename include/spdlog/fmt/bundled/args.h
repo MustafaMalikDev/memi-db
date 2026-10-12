@@ -63,13 +63,13 @@ class dynamic_arg_list {
 
 		template <typename Arg>
 		FMT_CONSTEXPR typed_node(const Arg& arg)
-			: value(arg)
+		        : value(arg)
 		{
 		}
 
 		template <typename Char>
 		FMT_CONSTEXPR typed_node(const basic_string_view<Char>& arg)
-			: value(arg.data(), arg.size())
+		        : value(arg.data(), arg.size())
 		{
 		}
 	};
@@ -80,10 +80,10 @@ public:
 	template <typename T, typename Arg> const T& push(const Arg& arg)
 	{
 		auto new_node =
-			std::unique_ptr<typed_node<T> >(new typed_node<T>(arg));
+		        std::unique_ptr<typed_node<T> >(new typed_node<T>(arg));
 		auto& value    = new_node->value;
 		new_node->next = std::move(head_);
-		head_	       = std::move(new_node);
+		head_          = std::move(new_node);
 		return value;
 	}
 };
@@ -102,8 +102,8 @@ public:
 template <typename Context>
 class dynamic_format_arg_store
 #if FMT_GCC_VERSION && FMT_GCC_VERSION < 409
-	// Workaround a GCC template argument substitution bug.
-	: public basic_format_args<Context>
+        // Workaround a GCC template argument substitution bug.
+        : public basic_format_args<Context>
 #endif
 {
 private:
@@ -111,16 +111,16 @@ private:
 
 	template <typename T> struct need_copy {
 		static constexpr detail::type mapped_type =
-			detail::mapped_type_constant<T, Context>::value;
+		        detail::mapped_type_constant<T, Context>::value;
 
 		enum {
 			value = !(
-				detail::is_reference_wrapper<T>::value ||
-				std::is_same<T, basic_string_view<char_type> >::
-					value ||
-				std::is_same<T, detail::std_string_view<
-							char_type> >::value ||
-				(mapped_type != detail::type::cstring_type &&
+			        detail::is_reference_wrapper<T>::value ||
+			        std::is_same<T, basic_string_view<char_type> >::
+			                value ||
+			        std::is_same<T, detail::std_string_view<
+			                                char_type> >::value ||
+			        (mapped_type != detail::type::cstring_type &&
 				 mapped_type != detail::type::string_type &&
 				 mapped_type != detail::type::custom_type))
 		};
@@ -128,12 +128,12 @@ private:
 
 	template <typename T>
 	using stored_type = conditional_t<
-		std::is_convertible<T, std::basic_string<char_type> >::value &&
-			!detail::is_reference_wrapper<T>::value,
-		std::basic_string<char_type>, T>;
+	        std::is_convertible<T, std::basic_string<char_type> >::value &&
+	                !detail::is_reference_wrapper<T>::value,
+	        std::basic_string<char_type>, T>;
 
 	// Storage of basic_format_arg must be contiguous.
-	std::vector<basic_format_arg<Context> >		data_;
+	std::vector<basic_format_arg<Context> >         data_;
 	std::vector<detail::named_arg_info<char_type> > named_info_;
 
 	// Storage of arguments not fitting into basic_format_arg must grow
@@ -146,9 +146,9 @@ private:
 	{
 		return detail::is_unpacked_bit | data_.size() |
 		       (named_info_.empty() ?
-				0ULL :
-				static_cast<unsigned long long>(
-					detail::has_named_args_bit));
+		                0ULL :
+		                static_cast<unsigned long long>(
+		                        detail::has_named_args_bit));
 	}
 
 	const basic_format_arg<Context>* data() const
@@ -166,22 +166,22 @@ private:
 	{
 		if (named_info_.empty()) {
 			constexpr const detail::named_arg_info<char_type>*
-					zero_ptr{ nullptr };
+			                zero_ptr{ nullptr };
 			data_.insert(data_.begin(), { zero_ptr, 0 });
 		}
 		data_.emplace_back(
-			detail::make_arg<Context>(detail::unwrap(arg.value)));
+		        detail::make_arg<Context>(detail::unwrap(arg.value)));
 		auto pop_one =
-			[](std::vector<basic_format_arg<Context> >* data) {
-				data->pop_back();
-			};
+		        [](std::vector<basic_format_arg<Context> >* data) {
+			        data->pop_back();
+		        };
 		std::unique_ptr<std::vector<basic_format_arg<Context> >,
-				decltype(pop_one)>
-			guard{ &data_, pop_one };
+		                decltype(pop_one)>
+		        guard{ &data_, pop_one };
 		named_info_.push_back(
-			{ arg.name, static_cast<int>(data_.size() - 2u) });
+		        { arg.name, static_cast<int>(data_.size() - 2u) });
 		data_[0].value_.named_args = { named_info_.data(),
-					       named_info_.size() };
+		                               named_info_.size() };
 		guard.release();
 	}
 
@@ -231,8 +231,8 @@ public:
 	template <typename T> void push_back(std::reference_wrapper<T> arg)
 	{
 		static_assert(
-			need_copy<T>::value,
-			"objects of built-in types and string views are always copied");
+		        need_copy<T>::value,
+		        "objects of built-in types and string views are always copied");
 		emplace_arg(arg.get());
 	}
 
@@ -245,13 +245,13 @@ public:
 	void push_back(const detail::named_arg<char_type, T>& arg)
 	{
 		const char_type* arg_name =
-			dynamic_args_
-				.push<std::basic_string<char_type> >(arg.name)
-				.c_str();
+		        dynamic_args_
+		                .push<std::basic_string<char_type> >(arg.name)
+		                .c_str();
 		if (detail::const_check(need_copy<T>::value)) {
 			emplace_arg(fmt::arg(
-				arg_name, dynamic_args_.push<stored_type<T> >(
-						  arg.value)));
+			        arg_name, dynamic_args_.push<stored_type<T> >(
+			                          arg.value)));
 		} else {
 			emplace_arg(fmt::arg(arg_name, arg.value));
 		}
@@ -274,7 +274,7 @@ public:
 	void reserve(size_t new_cap, size_t new_cap_named)
 	{
 		FMT_ASSERT(new_cap >= new_cap_named,
-			   "Set of arguments includes set of named arguments");
+		           "Set of arguments includes set of named arguments");
 		data_.reserve(new_cap);
 		named_info_.reserve(new_cap_named);
 	}

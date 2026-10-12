@@ -35,22 +35,22 @@ namespace spdlog
 
 // public methods
 SPDLOG_INLINE logger::logger(const logger& other)
-	: name_(other.name_)
-	, sinks_(other.sinks_)
-	, level_(other.level_.load(std::memory_order_relaxed))
-	, flush_level_(other.flush_level_.load(std::memory_order_relaxed))
-	, custom_err_handler_(other.custom_err_handler_)
-	, tracer_(other.tracer_)
+        : name_(other.name_)
+        , sinks_(other.sinks_)
+        , level_(other.level_.load(std::memory_order_relaxed))
+        , flush_level_(other.flush_level_.load(std::memory_order_relaxed))
+        , custom_err_handler_(other.custom_err_handler_)
+        , tracer_(other.tracer_)
 {
 }
 
 SPDLOG_INLINE logger::logger(logger&& other) SPDLOG_NOEXCEPT
-	: name_(std::move(other.name_)),
-	  sinks_(std::move(other.sinks_)),
-	  level_(other.level_.load(std::memory_order_relaxed)),
-	  flush_level_(other.flush_level_.load(std::memory_order_relaxed)),
-	  custom_err_handler_(std::move(other.custom_err_handler_)),
-	  tracer_(std::move(other.tracer_))
+        : name_(std::move(other.name_)),
+          sinks_(std::move(other.sinks_)),
+          level_(other.level_.load(std::memory_order_relaxed)),
+          flush_level_(other.flush_level_.load(std::memory_order_relaxed)),
+          custom_err_handler_(std::move(other.custom_err_handler_)),
+          tracer_(std::move(other.tracer_))
 
 {
 }
@@ -68,7 +68,7 @@ SPDLOG_INLINE void logger::swap(spdlog::logger& other) SPDLOG_NOEXCEPT
 
 	// swap level_
 	auto other_level = other.level_.load();
-	auto my_level	 = level_.exchange(other_level);
+	auto my_level    = level_.exchange(other_level);
 	other.level_.store(my_level);
 
 	// swap flush level_
@@ -93,7 +93,7 @@ SPDLOG_INLINE void logger::set_level(level::level_enum log_level)
 SPDLOG_INLINE level::level_enum logger::level() const
 {
 	return static_cast<level::level_enum>(
-		level_.load(std::memory_order_relaxed));
+	        level_.load(std::memory_order_relaxed));
 }
 
 SPDLOG_INLINE const std::string& logger::name() const
@@ -116,11 +116,11 @@ SPDLOG_INLINE void logger::set_formatter(std::unique_ptr<formatter> f)
 	}
 }
 
-SPDLOG_INLINE void logger::set_pattern(std::string	 pattern,
-				       pattern_time_type time_type)
+SPDLOG_INLINE void logger::set_pattern(std::string       pattern,
+                                       pattern_time_type time_type)
 {
 	auto new_formatter = details::make_unique<pattern_formatter>(
-		std::move(pattern), time_type);
+	        std::move(pattern), time_type);
 	set_formatter(std::move(new_formatter));
 }
 
@@ -155,7 +155,7 @@ SPDLOG_INLINE void logger::flush_on(level::level_enum log_level)
 SPDLOG_INLINE level::level_enum logger::flush_level() const
 {
 	return static_cast<level::level_enum>(
-		flush_level_.load(std::memory_order_relaxed));
+	        flush_level_.load(std::memory_order_relaxed));
 }
 
 // sinks
@@ -185,7 +185,7 @@ SPDLOG_INLINE std::shared_ptr<logger> logger::clone(std::string logger_name)
 
 // protected methods
 SPDLOG_INLINE void logger::log_it_(const spdlog::details::log_msg& log_msg,
-				   bool log_enabled, bool traceback_enabled)
+                                   bool log_enabled, bool traceback_enabled)
 {
 	if (log_enabled) {
 		sink_it_(log_msg);
@@ -228,13 +228,13 @@ SPDLOG_INLINE void logger::dump_backtrace_()
 	using details::log_msg;
 	if (tracer_.enabled() && !tracer_.empty()) {
 		sink_it_(log_msg{
-			name(), level::info,
-			"****************** Backtrace Start ******************" });
+		        name(), level::info,
+		        "****************** Backtrace Start ******************" });
 		tracer_.foreach_pop(
-			[this](const log_msg& msg) { this->sink_it_(msg); });
+		        [this](const log_msg& msg) { this->sink_it_(msg); });
 		sink_it_(log_msg{
-			name(), level::info,
-			"****************** Backtrace End ********************" });
+		        name(), level::info,
+		        "****************** Backtrace End ********************" });
 	}
 }
 
@@ -250,10 +250,10 @@ SPDLOG_INLINE void logger::err_handler_(const std::string& msg)
 		custom_err_handler_(msg);
 	} else {
 		using std::chrono::system_clock;
-		static std::mutex			     mutex;
+		static std::mutex                            mutex;
 		static std::chrono::system_clock::time_point last_report_time;
-		static size_t				     err_counter = 0;
-		std::lock_guard<std::mutex>		     lk{ mutex };
+		static size_t                                err_counter = 0;
+		std::lock_guard<std::mutex>                  lk{ mutex };
 		auto now = system_clock::now();
 		err_counter++;
 		if (now - last_report_time < std::chrono::seconds(1)) {
@@ -261,18 +261,18 @@ SPDLOG_INLINE void logger::err_handler_(const std::string& msg)
 		}
 		last_report_time = now;
 		auto tm_time =
-			details::os::localtime(system_clock::to_time_t(now));
+		        details::os::localtime(system_clock::to_time_t(now));
 		char date_buf[64];
 		std::strftime(date_buf, sizeof(date_buf), "%Y-%m-%d %H:%M:%S",
-			      &tm_time);
+		              &tm_time);
 #if defined(USING_R) && defined(R_R_H) // if in R environment
 		REprintf("[*** LOG ERROR #%04zu ***] [%s] [%s] %s\n",
-			 err_counter, date_buf, name().c_str(), msg.c_str());
+		         err_counter, date_buf, name().c_str(), msg.c_str());
 #else
 		std::fprintf(stderr,
-			     "[*** LOG ERROR #%04zu ***] [%s] [%s] %s\n",
-			     err_counter, date_buf, name().c_str(),
-			     msg.c_str());
+		             "[*** LOG ERROR #%04zu ***] [%s] [%s] %s\n",
+		             err_counter, date_buf, name().c_str(),
+		             msg.c_str());
 #endif
 	}
 }

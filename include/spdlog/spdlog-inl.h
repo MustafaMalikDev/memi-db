@@ -60,7 +60,7 @@ SPDLOG_INLINE void set_formatter(std::unique_ptr<spdlog::formatter> formatter)
 SPDLOG_INLINE void set_pattern(std::string pattern, pattern_time_type time_type)
 {
 	set_formatter(std::unique_ptr<spdlog::formatter>(
-		new pattern_formatter(std::move(pattern), time_type)));
+	        new pattern_formatter(std::move(pattern), time_type)));
 }
 
 SPDLOG_INLINE void enable_backtrace(size_t n_messages)
@@ -132,7 +132,7 @@ SPDLOG_INLINE void shutdown()
 SPDLOG_INLINE void set_automatic_registration(bool automatic_registration)
 {
 	details::registry::instance().set_automatic_registration(
-		automatic_registration);
+	        automatic_registration);
 }
 
 SPDLOG_INLINE std::shared_ptr<spdlog::logger> default_logger()
@@ -149,13 +149,13 @@ SPDLOG_INLINE void
 set_default_logger(std::shared_ptr<spdlog::logger> default_logger)
 {
 	details::registry::instance().set_default_logger(
-		std::move(default_logger));
+	        std::move(default_logger));
 }
 
 SPDLOG_INLINE void apply_logger_env_levels(std::shared_ptr<logger> logger)
 {
 	details::registry::instance().apply_logger_env_levels(
-		std::move(logger));
+	        std::move(logger));
 }
 
 } // namespace spdlog

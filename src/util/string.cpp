@@ -22,13 +22,11 @@ namespace memi
 
 std::vector<std::string> split(const std::string_view& delim, std::string str)
 {
-	if (str.empty()) {
-		return {};
-	}
+	MEMI_RETURN_QUICK_IF(str.empty(), {});
 
 	std::vector<std::string> tokens;
-	size_t			 pos = 0;
-	std::string		 token;
+	size_t                   pos = 0;
+	std::string              token;
 
 	while ((pos = str.find(delim)) != std::string::npos) {
 		token = str.substr(0, pos);
@@ -38,6 +36,19 @@ std::vector<std::string> split(const std::string_view& delim, std::string str)
 
 	tokens.push_back(str);
 	return tokens;
+}
+
+bool is_upper(const std::string_view& str)
+{
+	MEMI_RETURN_QUICK_IF(str.empty(), false)
+
+	for (char ch : str) {
+		if (!std::isupper(ch)) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 }

@@ -46,10 +46,10 @@ class tcp_client {
 	static void init_winsock_()
 	{
 		WSADATA wsaData;
-		auto	rv = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		auto    rv = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (rv != 0) {
 			throw_winsock_error_("WSAStartup failed",
-					     ::WSAGetLastError());
+			                     ::WSAGetLastError());
 		}
 	}
 
@@ -57,10 +57,10 @@ class tcp_client {
 	{
 		char buf[512];
 		::FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
-					 FORMAT_MESSAGE_IGNORE_INSERTS,
-				 NULL, last_error,
-				 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-				 (sizeof(buf) / sizeof(char)), NULL);
+		                         FORMAT_MESSAGE_IGNORE_INSERTS,
+		                 NULL, last_error,
+		                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
+		                 (sizeof(buf) / sizeof(char)), NULL);
 
 		throw_spdlog_ex(fmt_lib::format("tcp_sink - {}: {}", msg, buf));
 	}
@@ -103,16 +103,16 @@ public:
 		ZeroMemory(&hints, sizeof(hints));
 
 		hints.ai_family =
-			AF_UNSPEC; // To work with IPv4, IPv6, and so on
+		        AF_UNSPEC; // To work with IPv4, IPv6, and so on
 		hints.ai_socktype = SOCK_STREAM; // TCP
 		hints.ai_flags =
-			AI_NUMERICSERV; // port passed as as numeric value
+		        AI_NUMERICSERV; // port passed as as numeric value
 		hints.ai_protocol = 0;
 
-		auto		 port_str = std::to_string(port);
+		auto             port_str = std::to_string(port);
 		struct addrinfo* addrinfo_result;
 		auto rv = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints,
-					&addrinfo_result);
+		                        &addrinfo_result);
 		int  last_error = 0;
 		if (rv != 0) {
 			last_error = ::WSAGetLastError();
@@ -123,16 +123,16 @@ public:
 		// Try each address until we successfully connect(2).
 
 		for (auto* rp = addrinfo_result; rp != nullptr;
-		     rp	      = rp->ai_next) {
+		     rp       = rp->ai_next) {
 			socket_ = socket(rp->ai_family, rp->ai_socktype,
-					 rp->ai_protocol);
+			                 rp->ai_protocol);
 			if (socket_ == INVALID_SOCKET) {
 				last_error = ::WSAGetLastError();
 				WSACleanup();
 				continue;
 			}
 			if (::connect(socket_, rp->ai_addr,
-				      (int) rp->ai_addrlen) == 0) {
+			              (int) rp->ai_addrlen) == 0) {
 				break;
 			} else {
 				last_error = ::WSAGetLastError();
@@ -148,8 +148,8 @@ public:
 		// set TCP_NODELAY
 		int enable_flag = 1;
 		::setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY,
-			     reinterpret_cast<char*>(&enable_flag),
-			     sizeof(enable_flag));
+		             reinterpret_cast<char*>(&enable_flag),
+		             sizeof(enable_flag));
 	}
 
 	// Send exactly n_bytes of the given data.
@@ -160,8 +160,8 @@ public:
 		while (bytes_sent < n_bytes) {
 			const int send_flags = 0;
 			auto write_result = ::send(socket_, data + bytes_sent,
-						   (int) (n_bytes - bytes_sent),
-						   send_flags);
+			                           (int) (n_bytes - bytes_sent),
+			                           send_flags);
 			if (write_result == SOCKET_ERROR) {
 				int last_error = ::WSAGetLastError();
 				close();

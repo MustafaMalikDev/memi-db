@@ -51,7 +51,7 @@ class stopwatch {
 
 public:
 	stopwatch()
-		: start_tp_{ clock::now() }
+	        : start_tp_{ clock::now() }
 	{
 	}
 
@@ -63,7 +63,7 @@ public:
 	std::chrono::milliseconds elapsed_ms() const
 	{
 		return std::chrono::duration_cast<std::chrono::milliseconds>(
-			clock::now() - start_tp_);
+		        clock::now() - start_tp_);
 	}
 
 	void reset()
@@ -76,15 +76,15 @@ public:
 // Support for fmt formatting  (e.g. "{:012.9}" or just "{}")
 namespace
 #ifdef SPDLOG_USE_STD_FORMAT
-	std
+        std
 #else
-	fmt
+        fmt
 #endif
 {
 template <> struct formatter<spdlog::stopwatch> : formatter<double> {
 	template <typename FormatContext>
 	auto format(const spdlog::stopwatch& sw, FormatContext& ctx) const
-		-> decltype(ctx.out())
+	        -> decltype(ctx.out())
 	{
 		return formatter<double>::format(sw.elapsed().count(), ctx);
 	}

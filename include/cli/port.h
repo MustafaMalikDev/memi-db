@@ -30,7 +30,7 @@ namespace memi
 
 class port final {
 private:
-	port()	= default;
+	port()  = default;
 	~port() = default;
 
 	MEMI_NO_COPY_MOVE(port)
@@ -47,7 +47,7 @@ public:
 	}
 
 private:
-	uint16_t		      m_port{ MEMIDB_DEFAULT_PORT };
+	uint16_t                      m_port{ MEMIDB_DEFAULT_PORT };
 	std::vector<std::string_view> m_args{};
 };
 

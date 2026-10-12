@@ -49,13 +49,13 @@ namespace sinks
 
 struct tcp_sink_config {
 	std::string server_host;
-	int	    server_port;
-	bool	    lazy_connect =
-		false; // if true connect on first log call instead of on construction
+	int         server_port;
+	bool        lazy_connect =
+	        false; // if true connect on first log call instead of on construction
 
 	tcp_sink_config(std::string host, int port)
-		: server_host{ std::move(host) }
-		, server_port{ port }
+	        : server_host{ std::move(host) }
+	        , server_port{ port }
 	{
 	}
 };
@@ -67,11 +67,11 @@ public:
 	// host can be hostname or ip address
 
 	explicit tcp_sink(tcp_sink_config sink_config)
-		: config_{ std::move(sink_config) }
+	        : config_{ std::move(sink_config) }
 	{
 		if (!config_.lazy_connect) {
 			this->client_.connect(config_.server_host,
-					      config_.server_port);
+			                      config_.server_port);
 		}
 	}
 
@@ -82,10 +82,10 @@ protected:
 	{
 		spdlog::memory_buf_t formatted;
 		spdlog::sinks::base_sink<Mutex>::formatter_->format(msg,
-								    formatted);
+		                                                    formatted);
 		if (!client_.is_connected()) {
 			client_.connect(config_.server_host,
-					config_.server_port);
+			                config_.server_port);
 		}
 		client_.send(formatted.data(), formatted.size());
 	}
@@ -93,7 +93,7 @@ protected:
 	void flush_() override
 	{
 	}
-	tcp_sink_config	    config_;
+	tcp_sink_config     config_;
 	details::tcp_client client_;
 };
 

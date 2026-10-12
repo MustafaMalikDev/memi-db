@@ -26,8 +26,8 @@ int16_t stos(const std::string str)
 	MEMI_RETURN_QUICK_IF(str.empty(), 0)
 
 	int conv = std::stoi(str);
-	int min	 = std::numeric_limits<int16_t>::lowest();
-	int max	 = std::numeric_limits<int16_t>::max();
+	int min  = std::numeric_limits<int16_t>::lowest();
+	int max  = std::numeric_limits<int16_t>::max();
 
 	if (conv >= min && conv <= max) {
 		return static_cast<int16_t>(conv);

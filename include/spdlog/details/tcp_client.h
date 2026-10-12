@@ -75,33 +75,33 @@ public:
 		struct addrinfo hints{};
 		memset(&hints, 0, sizeof(struct addrinfo));
 		hints.ai_family =
-			AF_UNSPEC; // To work with IPv4, IPv6, and so on
+		        AF_UNSPEC; // To work with IPv4, IPv6, and so on
 		hints.ai_socktype = SOCK_STREAM; // TCP
 		hints.ai_flags =
-			AI_NUMERICSERV; // port passed as as numeric value
+		        AI_NUMERICSERV; // port passed as as numeric value
 		hints.ai_protocol = 0;
 
-		auto		 port_str = std::to_string(port);
+		auto             port_str = std::to_string(port);
 		struct addrinfo* addrinfo_result;
 		auto rv = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints,
-					&addrinfo_result);
+		                        &addrinfo_result);
 		if (rv != 0) {
 			throw_spdlog_ex(fmt_lib::format(
-				"::getaddrinfo failed: {}", gai_strerror(rv)));
+			        "::getaddrinfo failed: {}", gai_strerror(rv)));
 		}
 
 		// Try each address until we successfully connect(2).
 		int last_errno = 0;
 		for (auto* rp = addrinfo_result; rp != nullptr;
-		     rp	      = rp->ai_next) {
+		     rp       = rp->ai_next) {
 #if defined(SOCK_CLOEXEC)
 			const int flags = SOCK_CLOEXEC;
 #else
 			const int flags = 0;
 #endif
 			socket_ = ::socket(rp->ai_family,
-					   rp->ai_socktype | flags,
-					   rp->ai_protocol);
+			                   rp->ai_socktype | flags,
+			                   rp->ai_protocol);
 			if (socket_ == -1) {
 				last_errno = errno;
 				continue;
@@ -122,14 +122,14 @@ public:
 		// set TCP_NODELAY
 		int enable_flag = 1;
 		::setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY,
-			     reinterpret_cast<char*>(&enable_flag),
-			     sizeof(enable_flag));
+		             reinterpret_cast<char*>(&enable_flag),
+		             sizeof(enable_flag));
 
 		// prevent sigpipe on systems where MSG_NOSIGNAL is not available
 #if defined(SO_NOSIGPIPE) && !defined(MSG_NOSIGNAL)
 		::setsockopt(socket_, SOL_SOCKET, SO_NOSIGPIPE,
-			     reinterpret_cast<char*>(&enable_flag),
-			     sizeof(enable_flag));
+		             reinterpret_cast<char*>(&enable_flag),
+		             sizeof(enable_flag));
 #endif
 
 #if !defined(SO_NOSIGPIPE) && !defined(MSG_NOSIGNAL)
@@ -149,8 +149,8 @@ public:
 			const int send_flags = 0;
 #endif
 			auto write_result = ::send(socket_, data + bytes_sent,
-						   n_bytes - bytes_sent,
-						   send_flags);
+			                           n_bytes - bytes_sent,
+			                           send_flags);
 			if (write_result < 0) {
 				close();
 				throw_spdlog_ex("write(2) failed", errno);

@@ -34,11 +34,11 @@
 
 /* inspired by Qt source code */
 #define MEMI_NO_COPY(clazz)                      \
-	clazz(const clazz&)	       = delete; \
+	clazz(const clazz&)            = delete; \
 	clazz& operator=(const clazz&) = delete;
 
 #define MEMI_NO_MOVE(clazz)                       \
-	clazz(const clazz&&)		= delete; \
+	clazz(const clazz&&)            = delete; \
 	clazz& operator=(const clazz&&) = delete;
 
 #define MEMI_NO_COPY_MOVE(clazz) \

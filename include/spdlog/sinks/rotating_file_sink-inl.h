@@ -44,21 +44,21 @@ namespace sinks
 
 template <typename Mutex>
 SPDLOG_INLINE rotating_file_sink<Mutex>::rotating_file_sink(
-	filename_t base_filename, std::size_t max_size, std::size_t max_files,
-	bool rotate_on_open, const file_event_handlers& event_handlers)
-	: base_filename_(std::move(base_filename))
-	, max_size_(max_size)
-	, max_files_(max_files)
-	, file_helper_{ event_handlers }
+        filename_t base_filename, std::size_t max_size, std::size_t max_files,
+        bool rotate_on_open, const file_event_handlers& event_handlers)
+        : base_filename_(std::move(base_filename))
+        , max_size_(max_size)
+        , max_files_(max_files)
+        , file_helper_{ event_handlers }
 {
 	if (max_size == 0) {
 		throw_spdlog_ex(
-			"rotating sink constructor: max_size arg cannot be zero");
+		        "rotating sink constructor: max_size arg cannot be zero");
 	}
 
 	if (max_files > 200000) {
 		throw_spdlog_ex(
-			"rotating sink constructor: max_files arg cannot exceed 200000");
+		        "rotating sink constructor: max_files arg cannot exceed 200000");
 	}
 	file_helper_.open(calc_filename(base_filename_, 0));
 	current_size_ = file_helper_.size(); // expensive. called only once
@@ -72,7 +72,7 @@ SPDLOG_INLINE rotating_file_sink<Mutex>::rotating_file_sink(
 // e.g. calc_filename("logs/mylog.txt, 3) => "logs/mylog.3.txt".
 template <typename Mutex>
 SPDLOG_INLINE filename_t rotating_file_sink<Mutex>::calc_filename(
-	const filename_t& filename, std::size_t index)
+        const filename_t& filename, std::size_t index)
 {
 	if (index == 0u) {
 		return filename;
@@ -80,9 +80,9 @@ SPDLOG_INLINE filename_t rotating_file_sink<Mutex>::calc_filename(
 
 	filename_t basename, ext;
 	std::tie(basename, ext) =
-		details::file_helper::split_by_extension(filename);
+	        details::file_helper::split_by_extension(filename);
 	return fmt_lib::format(SPDLOG_FILENAME_T("{}.{}{}"), basename, index,
-			       ext);
+	                       ext);
 }
 
 template <typename Mutex>
@@ -145,13 +145,13 @@ SPDLOG_INLINE void rotating_file_sink<Mutex>::rotate_()
 			details::os::sleep_for_millis(100);
 			if (!rename_file_(src, target)) {
 				file_helper_.reopen(
-					true); // truncate the log file anyway to prevent it to grow beyond its limit!
+				        true); // truncate the log file anyway to prevent it to grow beyond its limit!
 				current_size_ = 0;
 				throw_spdlog_ex(
-					"rotating_file_sink: failed renaming " +
-						filename_to_str(src) + " to " +
-						filename_to_str(target),
-					errno);
+				        "rotating_file_sink: failed renaming " +
+				                filename_to_str(src) + " to " +
+				                filename_to_str(target),
+				        errno);
 			}
 		}
 	}
@@ -163,7 +163,7 @@ SPDLOG_INLINE void rotating_file_sink<Mutex>::rotate_()
 template <typename Mutex>
 SPDLOG_INLINE bool
 rotating_file_sink<Mutex>::rename_file_(const filename_t& src_filename,
-					const filename_t& target_filename)
+                                        const filename_t& target_filename)
 {
 	// try to delete the target file in case it already exists.
 	(void) details::os::remove(target_filename);

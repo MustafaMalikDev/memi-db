@@ -24,13 +24,13 @@ namespace memi
 bool port::is_available() const
 {
 	return socket(m_port, MEMI_DEFAULT_SOCK_BUF, MEMI_DEFAULT_SOCK_QUEUE)
-		.is_port_available();
+	        .is_port_available();
 }
 
 MEMI_DEFINE_SINGLETON(port, int argc, char* argv[])
 {
 	static port p;
-	p.m_args		  = args2vec(argc, argv);
+	p.m_args                  = args2vec(argc, argv);
 	std::string_view port_str = extract_flag("port", p.m_args);
 
 	if (!port_str.empty()) {
@@ -41,12 +41,12 @@ MEMI_DEFINE_SINGLETON(port, int argc, char* argv[])
 
 			if (p.is_available()) {
 				spdlog::info("successfully assigned port: {}",
-					     np);
+				             np);
 			} else {
 				p.m_port = MEMIDB_DEFAULT_PORT;
 				spdlog::warn(
-					"could not assign port: {}, defaulting to: {}",
-					np, p.m_port);
+				        "could not assign port: {}, defaulting to: {}",
+				        np, p.m_port);
 			}
 		}
 	}

@@ -50,7 +50,7 @@ class thread_pool;
 class SPDLOG_API registry {
 public:
 	using log_levels = std::unordered_map<std::string, level::level_enum>;
-	registry(const registry&)	     = delete;
+	registry(const registry&)            = delete;
 	registry& operator=(const registry&) = delete;
 
 	void register_logger(std::shared_ptr<logger> new_logger);
@@ -94,7 +94,7 @@ public:
 		std::lock_guard<std::mutex> lock(flusher_mutex_);
 		auto clbk = [this]() { this->flush_all(); };
 		periodic_flusher_ =
-			details::make_unique<periodic_worker>(clbk, interval);
+		        details::make_unique<periodic_worker>(clbk, interval);
 	}
 
 	std::unique_ptr<periodic_worker>& get_flusher()
@@ -106,7 +106,7 @@ public:
 	void set_error_handler(err_handler handler);
 
 	void apply_all(
-		const std::function<void(const std::shared_ptr<logger>)>& fun);
+	        const std::function<void(const std::shared_ptr<logger>)>& fun);
 
 	void flush_all();
 
@@ -132,22 +132,22 @@ private:
 	registry();
 	~registry();
 
-	void	   throw_if_exists_(const std::string& logger_name);
-	void	   register_logger_(std::shared_ptr<logger> new_logger);
-	bool	   set_level_from_cfg_(logger* logger);
+	void       throw_if_exists_(const std::string& logger_name);
+	void       register_logger_(std::shared_ptr<logger> new_logger);
+	bool       set_level_from_cfg_(logger* logger);
 	std::mutex logger_map_mutex_, flusher_mutex_;
-	std::recursive_mutex					  tp_mutex_;
+	std::recursive_mutex                                      tp_mutex_;
 	std::unordered_map<std::string, std::shared_ptr<logger> > loggers_;
-	log_levels						  log_levels_;
-	std::unique_ptr<formatter>				  formatter_;
-	spdlog::level::level_enum	 global_log_level_ = level::info;
-	level::level_enum		 flush_level_	   = level::off;
-	err_handler			 err_handler_;
-	std::shared_ptr<thread_pool>	 tp_;
+	log_levels                                                log_levels_;
+	std::unique_ptr<formatter>                                formatter_;
+	spdlog::level::level_enum        global_log_level_ = level::info;
+	level::level_enum                flush_level_      = level::off;
+	err_handler                      err_handler_;
+	std::shared_ptr<thread_pool>     tp_;
 	std::unique_ptr<periodic_worker> periodic_flusher_;
-	std::shared_ptr<logger>		 default_logger_;
-	bool				 automatic_registration_ = true;
-	size_t				 backtrace_n_messages_	 = 0;
+	std::shared_ptr<logger>          default_logger_;
+	bool                             automatic_registration_ = true;
+	size_t                           backtrace_n_messages_   = 0;
 };
 
 } // namespace details

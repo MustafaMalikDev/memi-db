@@ -68,12 +68,12 @@
 #include <spdlog/fmt/fmt.h>
 
 #if !defined(SPDLOG_USE_STD_FORMAT) && \
-	FMT_VERSION >=                 \
-		80000 // backward compatibility with fmt versions older than 8
+        FMT_VERSION >=                 \
+                80000 // backward compatibility with fmt versions older than 8
 #	define SPDLOG_FMT_RUNTIME(format_string) fmt::runtime(format_string)
 #	define SPDLOG_FMT_STRING(format_string) FMT_STRING(format_string)
 #	if defined(SPDLOG_WCHAR_FILENAMES) || \
-		defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
+	        defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 #		include <spdlog/fmt/xchar.h>
 #	endif
 #else
@@ -116,7 +116,7 @@
 // disable thread local on msvc 2013
 #ifndef SPDLOG_NO_TLS
 #	if (defined(_MSC_VER) && (_MSC_VER < 1900)) || \
-		defined(__cplusplus_winrt)
+	        defined(__cplusplus_winrt)
 #		define SPDLOG_NO_TLS 1
 #	endif
 #endif
@@ -162,8 +162,8 @@ using filename_t = std::string;
 #	define SPDLOG_FILENAME_T(s) s
 #endif
 
-using log_clock	      = std::chrono::system_clock;
-using sink_ptr	      = std::shared_ptr<sinks::sink>;
+using log_clock       = std::chrono::system_clock;
+using sink_ptr        = std::shared_ptr<sinks::sink>;
 using sinks_init_list = std::initializer_list<sink_ptr>;
 using err_handler     = std::function<void(const std::string& err_msg)>;
 #ifdef SPDLOG_USE_STD_FORMAT
@@ -181,13 +181,13 @@ using format_string_t = std::string_view;
 
 template <class T, class Char = char>
 struct is_convertible_to_basic_format_string
-	: std::integral_constant<
-		  bool,
-		  std::is_convertible<T, std::basic_string_view<Char> >::value> {
+        : std::integral_constant<
+                  bool,
+                  std::is_convertible<T, std::basic_string_view<Char> >::value> {
 };
 
 #	if defined(SPDLOG_WCHAR_FILENAMES) || \
-		defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
+	        defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 using wstring_view_t = std::wstring_view;
 using wmemory_buf_t  = std::wstring;
 
@@ -209,7 +209,7 @@ template <typename... Args> using format_string_t = fmt::format_string<Args...>;
 
 template <class T>
 using remove_cvref_t =
-	typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+        typename std::remove_cv<typename std::remove_reference<T>::type>::type;
 
 template <typename Char>
 #	if FMT_VERSION >= 90101
@@ -223,14 +223,14 @@ using fmt_runtime_string = fmt::basic_runtime<Char>;
 // convertible to basic_format_string<Char> but not basic_string_view<Char>
 template <class T, class Char = char>
 struct is_convertible_to_basic_format_string
-	: std::integral_constant<
-		  bool,
-		  std::is_convertible<T, fmt::basic_string_view<Char> >::value ||
-			  std::is_same<remove_cvref_t<T>,
-				       fmt_runtime_string<Char> >::value> {};
+        : std::integral_constant<
+                  bool,
+                  std::is_convertible<T, fmt::basic_string_view<Char> >::value ||
+                          std::is_same<remove_cvref_t<T>,
+			               fmt_runtime_string<Char> >::value> {};
 
 #	if defined(SPDLOG_WCHAR_FILENAMES) || \
-		defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
+	        defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 using wstring_view_t = fmt::basic_string_view<wchar_t>;
 using wmemory_buf_t  = fmt::basic_memory_buffer<wchar_t, 250>;
 
@@ -244,14 +244,14 @@ using wformat_string_t = fmt::wformat_string<Args...>;
 #	ifndef _WIN32
 #		error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
 #	endif // _WIN32
-#endif	       // SPDLOG_WCHAR_TO_UTF8_SUPPORT
+#endif         // SPDLOG_WCHAR_TO_UTF8_SUPPORT
 
 template <class T>
 struct is_convertible_to_any_format_string
-	: std::integral_constant<
-		  bool, is_convertible_to_basic_format_string<T, char>::value ||
-				is_convertible_to_basic_format_string<
-					T, wchar_t>::value> {};
+        : std::integral_constant<
+                  bool, is_convertible_to_basic_format_string<T, char>::value ||
+                                is_convertible_to_basic_format_string<
+                                        T, wchar_t>::value> {};
 
 #if defined(SPDLOG_NO_ATOMIC_LEVELS)
 using level_t = details::null_atomic_int;
@@ -275,13 +275,13 @@ using level_t = std::atomic<int>;
 namespace level
 {
 enum level_enum : int {
-	trace	 = SPDLOG_LEVEL_TRACE,
-	debug	 = SPDLOG_LEVEL_DEBUG,
-	info	 = SPDLOG_LEVEL_INFO,
-	warn	 = SPDLOG_LEVEL_WARN,
-	err	 = SPDLOG_LEVEL_ERROR,
+	trace    = SPDLOG_LEVEL_TRACE,
+	debug    = SPDLOG_LEVEL_DEBUG,
+	info     = SPDLOG_LEVEL_INFO,
+	warn     = SPDLOG_LEVEL_WARN,
+	err      = SPDLOG_LEVEL_ERROR,
 	critical = SPDLOG_LEVEL_CRITICAL,
-	off	 = SPDLOG_LEVEL_OFF,
+	off      = SPDLOG_LEVEL_OFF,
 	n_levels
 };
 
@@ -343,16 +343,16 @@ private:
 };
 
 [[noreturn]] SPDLOG_API void throw_spdlog_ex(const std::string& msg,
-					     int		last_errno);
+                                             int                last_errno);
 [[noreturn]] SPDLOG_API void throw_spdlog_ex(std::string msg);
 
 struct source_loc {
 	SPDLOG_CONSTEXPR source_loc() = default;
 	SPDLOG_CONSTEXPR source_loc(const char* filename_in, int line_in,
-				    const char* funcname_in)
-		: filename{ filename_in }
-		, line{ line_in }
-		, funcname{ funcname_in }
+	                            const char* funcname_in)
+	        : filename{ filename_in }
+	        , line{ line_in }
+	        , funcname{ funcname_in }
 	{
 	}
 
@@ -361,24 +361,24 @@ struct source_loc {
 		return line == 0;
 	}
 	const char* filename{ nullptr };
-	int	    line{ 0 };
+	int         line{ 0 };
 	const char* funcname{ nullptr };
 };
 
 struct file_event_handlers {
 	file_event_handlers()
-		: before_open(nullptr)
-		, after_open(nullptr)
-		, before_close(nullptr)
-		, after_close(nullptr)
+	        : before_open(nullptr)
+	        , after_open(nullptr)
+	        , before_close(nullptr)
+	        , after_close(nullptr)
 	{
 	}
 
 	std::function<void(const filename_t& filename)> before_open;
 	std::function<void(const filename_t& filename, std::FILE* file_stream)>
-		after_open;
+	        after_open;
 	std::function<void(const filename_t& filename, std::FILE* file_stream)>
-							before_close;
+	                                                before_close;
 	std::function<void(const filename_t& filename)> after_close;
 };
 
@@ -447,14 +447,14 @@ std::unique_ptr<T> make_unique(Args&&... args)
 
 // to avoid useless casts (see https://github.com/nlohmann/json/issues/2893#issuecomment-889152324)
 template <typename T, typename U,
-	  enable_if_t<!std::is_same<T, U>::value, int> = 0>
+          enable_if_t<!std::is_same<T, U>::value, int> = 0>
 constexpr T conditional_static_cast(U value)
 {
 	return static_cast<T>(value);
 }
 
 template <typename T, typename U,
-	  enable_if_t<std::is_same<T, U>::value, int> = 0>
+          enable_if_t<std::is_same<T, U>::value, int> = 0>
 constexpr T conditional_static_cast(U value)
 {
 	return value;

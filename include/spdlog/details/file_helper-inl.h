@@ -41,7 +41,7 @@ namespace details
 
 SPDLOG_INLINE
 file_helper::file_helper(const file_event_handlers& event_handlers)
-	: event_handlers_(event_handlers)
+        : event_handlers_(event_handlers)
 {
 }
 
@@ -55,7 +55,7 @@ SPDLOG_INLINE void file_helper::open(const filename_t& fname, bool truncate)
 	close();
 	filename_ = fname;
 
-	auto* mode	 = SPDLOG_FILENAME_T("ab");
+	auto* mode       = SPDLOG_FILENAME_T("ab");
 	auto* trunc_mode = SPDLOG_FILENAME_T("wb");
 
 	if (event_handlers_.before_open) {
@@ -86,15 +86,15 @@ SPDLOG_INLINE void file_helper::open(const filename_t& fname, bool truncate)
 	}
 
 	throw_spdlog_ex("Failed opening file " +
-				os::filename_to_str(filename_) + " for writing",
-			errno);
+	                        os::filename_to_str(filename_) + " for writing",
+	                errno);
 }
 
 SPDLOG_INLINE void file_helper::reopen(bool truncate)
 {
 	if (filename_.empty()) {
 		throw_spdlog_ex(
-			"Failed re opening file - was not opened before");
+		        "Failed re opening file - was not opened before");
 	}
 	this->open(filename_, truncate);
 }
@@ -103,8 +103,8 @@ SPDLOG_INLINE void file_helper::flush()
 {
 	if (std::fflush(fd_) != 0) {
 		throw_spdlog_ex("Failed flush to file " +
-					os::filename_to_str(filename_),
-				errno);
+		                        os::filename_to_str(filename_),
+		                errno);
 	}
 }
 
@@ -112,8 +112,8 @@ SPDLOG_INLINE void file_helper::sync()
 {
 	if (!os::fsync(fd_)) {
 		throw_spdlog_ex("Failed to fsync file " +
-					os::filename_to_str(filename_),
-				errno);
+		                        os::filename_to_str(filename_),
+		                errno);
 	}
 }
 
@@ -138,11 +138,11 @@ SPDLOG_INLINE void file_helper::write(const memory_buf_t& buf)
 	if (fd_ == nullptr)
 		return;
 	size_t msg_size = buf.size();
-	auto   data	= buf.data();
+	auto   data     = buf.data();
 	if (std::fwrite(data, 1, msg_size, fd_) != msg_size) {
 		throw_spdlog_ex("Failed writing to file " +
-					os::filename_to_str(filename_),
-				errno);
+		                        os::filename_to_str(filename_),
+		                errno);
 	}
 }
 
@@ -150,7 +150,7 @@ SPDLOG_INLINE size_t file_helper::size() const
 {
 	if (fd_ == nullptr) {
 		throw_spdlog_ex("Cannot use size() on closed file " +
-				os::filename_to_str(filename_));
+		                os::filename_to_str(filename_));
 	}
 	return os::filesize(fd_);
 }
@@ -187,14 +187,14 @@ file_helper::split_by_extension(const filename_t& fname)
 
 	// treat cases like "/etc/rc.d/somelogfile or "/abc/.hiddenfile"
 	auto folder_index =
-		fname.find_last_of(details::os::folder_seps_filename);
+	        fname.find_last_of(details::os::folder_seps_filename);
 	if (folder_index != filename_t::npos && folder_index >= ext_index - 1) {
 		return std::make_tuple(fname, filename_t());
 	}
 
 	// finally - return a valid base and extension tuple
 	return std::make_tuple(fname.substr(0, ext_index),
-			       fname.substr(ext_index));
+	                       fname.substr(ext_index));
 }
 
 } // namespace details

@@ -32,14 +32,14 @@
 
 template <typename Mutex>
 SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::base_sink()
-	: formatter_{ details::make_unique<spdlog::pattern_formatter>() }
+        : formatter_{ details::make_unique<spdlog::pattern_formatter>() }
 {
 }
 
 template <typename Mutex>
 SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::base_sink(
-	std::unique_ptr<spdlog::formatter> formatter)
-	: formatter_{ std::move(formatter) }
+        std::unique_ptr<spdlog::formatter> formatter)
+        : formatter_{ std::move(formatter) }
 {
 }
 
@@ -68,7 +68,7 @@ spdlog::sinks::base_sink<Mutex>::set_pattern(const std::string& pattern)
 
 template <typename Mutex>
 void SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::set_formatter(
-	std::unique_ptr<spdlog::formatter> sink_formatter)
+        std::unique_ptr<spdlog::formatter> sink_formatter)
 {
 	std::lock_guard<Mutex> lock(mutex_);
 	set_formatter_(std::move(sink_formatter));
@@ -79,12 +79,12 @@ void SPDLOG_INLINE
 spdlog::sinks::base_sink<Mutex>::set_pattern_(const std::string& pattern)
 {
 	set_formatter_(
-		details::make_unique<spdlog::pattern_formatter>(pattern));
+	        details::make_unique<spdlog::pattern_formatter>(pattern));
 }
 
 template <typename Mutex>
 void SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::set_formatter_(
-	std::unique_ptr<spdlog::formatter> sink_formatter)
+        std::unique_ptr<spdlog::formatter> sink_formatter)
 {
 	formatter_ = std::move(sink_formatter);
 }

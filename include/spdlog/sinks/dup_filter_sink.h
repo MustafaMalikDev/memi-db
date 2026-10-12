@@ -59,19 +59,19 @@ template <typename Mutex> class dup_filter_sink : public dist_sink<Mutex> {
 public:
 	template <class Rep, class Period>
 	explicit dup_filter_sink(
-		std::chrono::duration<Rep, Period> max_skip_duration,
-		level::level_enum notification_level = level::info)
-		: max_skip_duration_{ max_skip_duration }
-		, log_level_{ notification_level }
+	        std::chrono::duration<Rep, Period> max_skip_duration,
+	        level::level_enum notification_level = level::info)
+	        : max_skip_duration_{ max_skip_duration }
+	        , log_level_{ notification_level }
 	{
 	}
 
 protected:
 	std::chrono::microseconds max_skip_duration_;
-	log_clock::time_point	  last_msg_time_;
-	std::string		  last_msg_payload_;
-	size_t			  skip_counter_ = 0;
-	level::level_enum	  log_level_;
+	log_clock::time_point     last_msg_time_;
+	std::string               last_msg_payload_;
+	size_t                    skip_counter_ = 0;
+	level::level_enum         log_level_;
 
 	void sink_it_(const details::log_msg& msg) override
 	{
@@ -85,15 +85,15 @@ protected:
 		if (skip_counter_ > 0) {
 			char buf[64];
 			auto msg_size = ::snprintf(
-				buf, sizeof(buf),
-				"Skipped %u duplicate messages..",
-				static_cast<unsigned>(skip_counter_));
+			        buf, sizeof(buf),
+			        "Skipped %u duplicate messages..",
+			        static_cast<unsigned>(skip_counter_));
 			if (msg_size > 0 &&
 			    static_cast<size_t>(msg_size) < sizeof(buf)) {
 				details::log_msg skipped_msg{
 					msg.source, msg.logger_name, log_level_,
 					string_view_t{ buf, static_cast<size_t>(
-								    msg_size) }
+					                            msg_size) }
 				};
 				dist_sink<Mutex>::sink_it_(skipped_msg);
 			}
@@ -104,8 +104,8 @@ protected:
 		last_msg_time_ = msg.time;
 		skip_counter_  = 0;
 		last_msg_payload_.assign(msg.payload.data(),
-					 msg.payload.data() +
-						 msg.payload.size());
+		                         msg.payload.data() +
+		                                 msg.payload.size());
 	}
 
 	// return whether the log msg should be displayed (true) or skipped (false)

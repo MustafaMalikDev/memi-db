@@ -28,7 +28,9 @@ namespace memi
 std::vector<std::string> split(const std::string_view& delim, std::string str);
 
 std::vector<std::string> split(const std::string_view& delim,
-			       const std::string_view& str);
+                               const std::string_view& str);
+
+bool is_upper(const std::string_view& str);
 
 }
 
