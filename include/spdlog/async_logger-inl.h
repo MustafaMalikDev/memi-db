@@ -31,7 +31,7 @@
 #include <string>
 
 SPDLOG_INLINE
-spdlog::async_logger::async_logger(std::string logger_name,
+spdlog::async_logger::async_logger(std::string	   logger_name,
 				   sinks_init_list sinks_list,
 				   std::weak_ptr<details::thread_pool> tp,
 				   async_overflow_policy overflow_policy)
@@ -42,7 +42,7 @@ spdlog::async_logger::async_logger(std::string logger_name,
 
 SPDLOG_INLINE
 spdlog::async_logger::async_logger(std::string logger_name,
-				   sink_ptr single_sink,
+				   sink_ptr    single_sink,
 				   std::weak_ptr<details::thread_pool> tp,
 				   async_overflow_policy overflow_policy)
 	: async_logger(std::move(logger_name), { std::move(single_sink) },
@@ -114,7 +114,7 @@ SPDLOG_INLINE void spdlog::async_logger::backend_flush_()
 SPDLOG_INLINE std::shared_ptr<spdlog::logger>
 spdlog::async_logger::clone(std::string new_name)
 {
-	auto cloned = std::make_shared<spdlog::async_logger>(*this);
+	auto cloned   = std::make_shared<spdlog::async_logger>(*this);
 	cloned->name_ = std::move(new_name);
 	return cloned;
 }

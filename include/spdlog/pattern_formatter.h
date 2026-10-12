@@ -55,10 +55,10 @@ struct padding_info {
 	{
 		return enabled_;
 	}
-	size_t width_ = 0;
-	pad_side side_ = pad_side::left;
-	bool truncate_ = false;
-	bool enabled_ = false;
+	size_t	 width_	   = 0;
+	pad_side side_	   = pad_side::left;
+	bool	 truncate_ = false;
+	bool	 enabled_  = false;
 };
 
 class SPDLOG_API flag_formatter {
@@ -67,8 +67,8 @@ public:
 		: padinfo_(padinfo)
 	{
 	}
-	flag_formatter() = default;
-	virtual ~flag_formatter() = default;
+	flag_formatter()			= default;
+	virtual ~flag_formatter()		= default;
 	virtual void format(const details::log_msg& msg, const std::tm& tm_time,
 			    memory_buf_t& dest) = 0;
 
@@ -95,17 +95,17 @@ public:
 				   std::unique_ptr<custom_flag_formatter> >;
 
 	explicit pattern_formatter(
-		std::string pattern,
+		std::string	  pattern,
 		pattern_time_type time_type = pattern_time_type::local,
-		std::string eol = spdlog::details::os::default_eol,
-		custom_flags custom_user_flags = custom_flags());
+		std::string	  eol	    = spdlog::details::os::default_eol,
+		custom_flags	  custom_user_flags = custom_flags());
 
 	// use default pattern is not given
 	explicit pattern_formatter(
 		pattern_time_type time_type = pattern_time_type::local,
-		std::string eol = spdlog::details::os::default_eol);
+		std::string	  eol	    = spdlog::details::os::default_eol);
 
-	pattern_formatter(const pattern_formatter& other) = delete;
+	pattern_formatter(const pattern_formatter& other)	     = delete;
 	pattern_formatter& operator=(const pattern_formatter& other) = delete;
 
 	std::unique_ptr<formatter> clone() const override;
@@ -122,14 +122,14 @@ public:
 	void need_localtime(bool need = true);
 
 private:
-	std::string pattern_;
-	std::string eol_;
-	pattern_time_type pattern_time_type_;
-	bool need_localtime_;
-	std::tm cached_tm_;
+	std::string	     pattern_;
+	std::string	     eol_;
+	pattern_time_type    pattern_time_type_;
+	bool		     need_localtime_;
+	std::tm		     cached_tm_;
 	std::chrono::seconds last_log_secs_;
 	std::vector<std::unique_ptr<details::flag_formatter> > formatters_;
-	custom_flags custom_handlers_;
+	custom_flags					       custom_handlers_;
 
 	std::tm get_time_(const details::log_msg& msg);
 	template <typename Padder>
@@ -140,7 +140,7 @@ private:
 	// Return padding.
 	static details::padding_info
 	handle_padspec_(std::string::const_iterator& it,
-			std::string::const_iterator end);
+			std::string::const_iterator  end);
 
 	void compile_pattern_(const std::string& pattern);
 };

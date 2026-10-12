@@ -58,8 +58,8 @@ public:
 	}
 
 	mongo_sink(std::shared_ptr<mongocxx::instance> instance,
-		   const std::string& db_name,
-		   const std::string& collection_name,
+		   const std::string&		       db_name,
+		   const std::string&		       collection_name,
 		   const std::string& uri = "mongodb://localhost:27017")
 		: instance_(std::move(instance))
 		, db_name_(db_name)
@@ -113,9 +113,9 @@ protected:
 
 private:
 	std::shared_ptr<mongocxx::instance> instance_;
-	std::string db_name_;
-	std::string coll_name_;
-	std::unique_ptr<mongocxx::client> client_ = nullptr;
+	std::string			    db_name_;
+	std::string			    coll_name_;
+	std::unique_ptr<mongocxx::client>   client_ = nullptr;
 };
 
 #include "spdlog/details/null_mutex.h"

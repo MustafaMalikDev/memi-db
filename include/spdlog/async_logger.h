@@ -38,7 +38,7 @@ namespace spdlog
 
 // Async overflow policy - block by default.
 enum class async_overflow_policy {
-	block, // Block until message can be enqueued
+	block,		// Block until message can be enqueued
 	overrun_oldest, // Discard oldest message in the queue if full when trying to
 	// add new item.
 	discard_new // Discard new message if the queue is full when trying to add new item.
@@ -58,7 +58,7 @@ public:
 	template <typename It>
 	async_logger(std::string logger_name, It begin, It end,
 		     std::weak_ptr<details::thread_pool> tp,
-		     async_overflow_policy overflow_policy =
+		     async_overflow_policy		 overflow_policy =
 			     async_overflow_policy::block)
 		: logger(std::move(logger_name), begin, end)
 		, thread_pool_(std::move(tp))
@@ -68,12 +68,12 @@ public:
 
 	async_logger(std::string logger_name, sinks_init_list sinks_list,
 		     std::weak_ptr<details::thread_pool> tp,
-		     async_overflow_policy overflow_policy =
+		     async_overflow_policy		 overflow_policy =
 			     async_overflow_policy::block);
 
 	async_logger(std::string logger_name, sink_ptr single_sink,
 		     std::weak_ptr<details::thread_pool> tp,
-		     async_overflow_policy overflow_policy =
+		     async_overflow_policy		 overflow_policy =
 			     async_overflow_policy::block);
 
 	std::shared_ptr<logger> clone(std::string new_name) override;
@@ -86,7 +86,7 @@ protected:
 
 private:
 	std::weak_ptr<details::thread_pool> thread_pool_;
-	async_overflow_policy overflow_policy_;
+	async_overflow_policy		    overflow_policy_;
 };
 } // namespace spdlog
 

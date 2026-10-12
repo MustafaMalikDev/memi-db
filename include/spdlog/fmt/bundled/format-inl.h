@@ -72,11 +72,11 @@ FMT_FUNC void format_error_code(detail::buffer<char>& out, int error_code,
 	// inline_buffer_size to avoid dynamic memory allocation and potential
 	// bad_alloc.
 	out.try_resize(0);
-	static const char SEP[] = ": ";
+	static const char SEP[]	      = ": ";
 	static const char ERROR_STR[] = "error ";
 	// Subtract 2 to account for terminating null characters in SEP and ERROR_STR.
 	size_t error_code_size = sizeof(SEP) + sizeof(ERROR_STR) - 2;
-	auto abs_value = static_cast<uint32_or_64_or_128_t<int> >(error_code);
+	auto   abs_value = static_cast<uint32_or_64_or_128_t<int> >(error_code);
 	if (detail::is_negative(error_code)) {
 		abs_value = 0 - abs_value;
 		++error_code_size;
@@ -130,7 +130,7 @@ FMT_FUNC auto thousands_sep_impl(locale_ref loc) -> thousands_sep_result<Char>
 {
 	auto& facet =
 		std::use_facet<std::numpunct<Char> >(loc.get<std::locale>());
-	auto grouping = facet.grouping();
+	auto grouping	   = facet.grouping();
 	auto thousands_sep = grouping.empty() ? Char() : facet.thousands_sep();
 	return { std::move(grouping), thousands_sep };
 }
@@ -191,7 +191,7 @@ inline uint128_fallback umul128(uint64_t x, uint64_t y) noexcept
 	return { static_cast<uint64_t>(p >> 64), static_cast<uint64_t>(p) };
 #elif defined(_MSC_VER) && defined(_M_X64)
 	auto result = uint128_fallback();
-	result.lo_ = _umul128(x, y, &result.hi_);
+	result.lo_  = _umul128(x, y, &result.hi_);
 	return result;
 #else
 	const uint64_t mask = static_cast<uint64_t>(max_value<uint32_t>());
@@ -231,7 +231,7 @@ inline uint64_t umul128_upper64(uint64_t x, uint64_t y) noexcept
 
 // Computes upper 128 bits of multiplication of a 64-bit unsigned integer and a
 // 128-bit unsigned integer.
-inline uint128_fallback umul192_upper128(uint64_t x,
+inline uint128_fallback umul192_upper128(uint64_t	  x,
 					 uint128_fallback y) noexcept
 {
 	uint128_fallback r = umul128(x, y.high());
@@ -248,10 +248,10 @@ inline uint64_t umul96_upper64(uint32_t x, uint64_t y) noexcept
 
 // Computes lower 128 bits of multiplication of a 64-bit unsigned integer and a
 // 128-bit unsigned integer.
-inline uint128_fallback umul192_lower128(uint64_t x,
+inline uint128_fallback umul192_lower128(uint64_t	  x,
 					 uint128_fallback y) noexcept
 {
-	uint64_t high = x * y.high();
+	uint64_t	 high	  = x * y.high();
 	uint128_fallback high_low = umul128(x, y.low());
 	return { high + high_low.high(), high_low.low() };
 }
@@ -286,7 +286,7 @@ inline int floor_log10_pow2_minus_log10_4_over_3(int e) noexcept
 
 static constexpr struct {
 	uint32_t divisor;
-	int shift_amount;
+	int	 shift_amount;
 } div_small_pow10_infos[] = { { 10, 16 }, { 100, 16 } };
 
 // Replaces n by floor(n / pow(10, N)) returning true if and only if n is
@@ -312,7 +312,7 @@ bool check_divisibility_and_divide_by_pow10(uint32_t& n) noexcept
 		(1u << info.shift_amount) / info.divisor + 1;
 	n *= magic_number;
 	const uint32_t comparison_mask = (1u << info.shift_amount) - 1;
-	bool result = (n & comparison_mask) < magic_number;
+	bool	       result	       = (n & comparison_mask) < magic_number;
 	n >>= info.shift_amount;
 	return result;
 }
@@ -346,7 +346,7 @@ inline uint64_t divide_by_10_to_kappa_plus_1(uint64_t n) noexcept
 template <class T> struct cache_accessor;
 
 template <> struct cache_accessor<float> {
-	using carrier_uint = float_info<float>::carrier_uint;
+	using carrier_uint     = float_info<float>::carrier_uint;
 	using cache_entry_type = uint64_t;
 
 	static uint64_t get_cached_power(int k) noexcept
@@ -400,7 +400,7 @@ template <> struct cache_accessor<float> {
 
 	struct compute_mul_result {
 		carrier_uint result;
-		bool is_integer;
+		bool	     is_integer;
 	};
 	struct compute_mul_parity_result {
 		bool parity;
@@ -416,7 +416,7 @@ template <> struct cache_accessor<float> {
 	}
 
 	static uint32_t compute_delta(const cache_entry_type& cache,
-				      int beta) noexcept
+				      int		      beta) noexcept
 	{
 		return static_cast<uint32_t>(cache >> (64 - 1 - beta));
 	}
@@ -463,7 +463,7 @@ template <> struct cache_accessor<float> {
 };
 
 template <> struct cache_accessor<double> {
-	using carrier_uint = float_info<double>::carrier_uint;
+	using carrier_uint     = float_info<double>::carrier_uint;
 	using cache_entry_type = uint128_fallback;
 
 	static uint128_fallback get_cached_power(int k) noexcept
@@ -1145,8 +1145,8 @@ template <> struct cache_accessor<double> {
 		// Compute base index.
 		int cache_index =
 			(k - float_info<double>::min_k) / compression_ratio;
-		int kb = cache_index * compression_ratio +
-			 float_info<double>::min_k;
+		int kb	   = cache_index * compression_ratio +
+			     float_info<double>::min_k;
 		int offset = k - kb;
 
 		// Get base cache.
@@ -1160,7 +1160,7 @@ template <> struct cache_accessor<double> {
 		FMT_ASSERT(alpha > 0 && alpha < 64, "shifting error detected");
 
 		// Try to recover the real cache.
-		uint64_t pow5 = powers_of_5_64[offset];
+		uint64_t	 pow5 = powers_of_5_64[offset];
 		uint128_fallback recovered_cache =
 			umul128(base_cache.high(), pow5);
 		uint128_fallback middle_low = umul128(base_cache.low(), pow5);
@@ -1169,7 +1169,7 @@ template <> struct cache_accessor<double> {
 
 		uint64_t high_to_middle = recovered_cache.high()
 					  << (64 - alpha);
-		uint64_t middle_to_low = recovered_cache.low() << (64 - alpha);
+		uint64_t middle_to_low	= recovered_cache.low() << (64 - alpha);
 
 		recovered_cache = uint128_fallback{
 			(recovered_cache.low() >> alpha) | high_to_middle,
@@ -1182,7 +1182,7 @@ template <> struct cache_accessor<double> {
 
 	struct compute_mul_result {
 		carrier_uint result;
-		bool is_integer;
+		bool	     is_integer;
 	};
 	struct compute_mul_parity_result {
 		bool parity;
@@ -1197,7 +1197,7 @@ template <> struct cache_accessor<double> {
 	}
 
 	static uint32_t compute_delta(cache_entry_type const& cache,
-				      int beta) noexcept
+				      int		      beta) noexcept
 	{
 		return static_cast<uint32_t>(cache.high() >> (64 - 1 - beta));
 	}
@@ -1257,7 +1257,7 @@ bool is_left_endpoint_integer_shorter_interval(int exponent) noexcept
 FMT_INLINE int remove_trailing_zeros(uint32_t& n) noexcept
 {
 	FMT_ASSERT(n != 0, "");
-	const uint32_t mod_inv_5 = 0xcccccccd;
+	const uint32_t mod_inv_5  = 0xcccccccd;
 	const uint32_t mod_inv_25 = mod_inv_5 * mod_inv_5;
 
 	int s = 0;
@@ -1284,7 +1284,7 @@ FMT_INLINE int remove_trailing_zeros(uint64_t& n) noexcept
 
 	// This magic number is ceil(2^90 / 10^8).
 	constexpr uint64_t magic_number = 12379400392853802749ull;
-	auto nm = umul128(n, magic_number);
+	auto		   nm		= umul128(n, magic_number);
 
 	// Is n is divisible by 10^8?
 	if ((nm.high() & ((1ull << (90 - 64)) - 1)) == 0 &&
@@ -1292,7 +1292,7 @@ FMT_INLINE int remove_trailing_zeros(uint64_t& n) noexcept
 		// If yes, work with the quotient.
 		auto n32 = static_cast<uint32_t>(nm.high() >> (90 - 64));
 
-		const uint32_t mod_inv_5 = 0xcccccccd;
+		const uint32_t mod_inv_5  = 0xcccccccd;
 		const uint32_t mod_inv_25 = mod_inv_5 * mod_inv_5;
 
 		int s = 8;
@@ -1314,7 +1314,7 @@ FMT_INLINE int remove_trailing_zeros(uint64_t& n) noexcept
 	}
 
 	// If n is not divisible by 10^8, work with n itself.
-	const uint64_t mod_inv_5 = 0xcccccccccccccccd;
+	const uint64_t mod_inv_5  = 0xcccccccccccccccd;
 	const uint64_t mod_inv_25 = mod_inv_5 * mod_inv_5;
 
 	int s = 0;
@@ -1341,7 +1341,7 @@ FMT_INLINE decimal_fp<T> shorter_interval_case(int exponent) noexcept
 	decimal_fp<T> ret_value;
 	// Compute k and beta
 	const int minus_k = floor_log10_pow2_minus_log10_4_over_3(exponent);
-	const int beta = exponent + floor_log2_pow10(-minus_k);
+	const int beta	  = exponent + floor_log2_pow10(-minus_k);
 
 	// Compute xi and zi
 	using cache_entry_type = typename cache_accessor<T>::cache_entry_type;
@@ -1392,16 +1392,16 @@ template <typename T> decimal_fp<T> to_decimal(T x) noexcept
 {
 	// Step 1: integer promotion & Schubfach multiplier calculation.
 
-	using carrier_uint = typename float_info<T>::carrier_uint;
+	using carrier_uint     = typename float_info<T>::carrier_uint;
 	using cache_entry_type = typename cache_accessor<T>::cache_entry_type;
-	auto br = bit_cast<carrier_uint>(x);
+	auto br		       = bit_cast<carrier_uint>(x);
 
 	// Extract significand bits and exponent bits.
 	const carrier_uint significand_mask =
 		(static_cast<carrier_uint>(1) << num_significand_bits<T>()) - 1;
 	carrier_uint significand = (br & significand_mask);
-	int exponent = static_cast<int>((br & exponent_mask<T>()) >>
-					num_significand_bits<T>());
+	int	     exponent	 = static_cast<int>((br & exponent_mask<T>()) >>
+						    num_significand_bits<T>());
 
 	if (exponent != 0) { // Check if normal.
 		exponent -= exponent_bias<T>() + num_significand_bits<T>();
@@ -1422,7 +1422,7 @@ template <typename T> decimal_fp<T> to_decimal(T x) noexcept
 			   num_significand_bits<T>() - 1;
 	}
 
-	const bool include_left_endpoint = (significand % 2 == 0);
+	const bool include_left_endpoint  = (significand % 2 == 0);
 	const bool include_right_endpoint = include_left_endpoint;
 
 	// Compute k and beta.
@@ -1490,7 +1490,7 @@ small_divisor_case_label:
 	ret_value.significand *= 10;
 	ret_value.exponent = minus_k + float_info<T>::kappa;
 
-	uint32_t dist = r - (deltai / 2) + (float_info<T>::small_divisor / 2);
+	uint32_t   dist = r - (deltai / 2) + (float_info<T>::small_divisor / 2);
 	const bool approx_y_parity =
 		((dist ^ (float_info<T>::small_divisor / 2)) & 1) != 0;
 
@@ -1547,7 +1547,7 @@ template <> struct formatter<detail::bigint> {
 	auto format(const detail::bigint& n, FormatContext& ctx) const ->
 		typename FormatContext::iterator
 	{
-		auto out = ctx.out();
+		auto out   = ctx.out();
 		bool first = true;
 		for (auto i = n.bigits_.size(); i > 0; --i) {
 			auto value = n.bigits_[i - 1u];
@@ -1686,15 +1686,15 @@ struct singleton {
 };
 
 inline auto is_printable(uint16_t x, const singleton* singletons,
-			 size_t singletons_size,
+			 size_t		      singletons_size,
 			 const unsigned char* singleton_lowers,
 			 const unsigned char* normal, size_t normal_size)
 	-> bool
 {
-	auto upper = x >> 8;
+	auto upper	 = x >> 8;
 	auto lower_start = 0;
 	for (size_t i = 0; i < singletons_size; ++i) {
-		auto s = singletons[i];
+		auto s	       = singletons[i];
 		auto lower_end = lower_start + s.lower_count;
 		if (upper < s.upper)
 			break;
@@ -1710,7 +1710,7 @@ inline auto is_printable(uint16_t x, const singleton* singletons,
 	auto xsigned = static_cast<int>(x);
 	auto current = true;
 	for (size_t i = 0; i < normal_size; ++i) {
-		auto v = static_cast<int>(normal[i]);
+		auto v	 = static_cast<int>(normal[i]);
 		auto len = (v & 0x80) != 0 ? (v & 0x7f) << 8 | normal[++i] : v;
 		xsigned -= len;
 		if (xsigned < 0)

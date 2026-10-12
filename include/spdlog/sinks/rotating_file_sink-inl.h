@@ -166,7 +166,7 @@ rotating_file_sink<Mutex>::rename_file_(const filename_t& src_filename,
 					const filename_t& target_filename)
 {
 	// try to delete the target file in case it already exists.
-	(void)details::os::remove(target_filename);
+	(void) details::os::remove(target_filename);
 	return details::os::rename(src_filename, target_filename) == 0;
 }
 

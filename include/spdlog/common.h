@@ -162,15 +162,15 @@ using filename_t = std::string;
 #	define SPDLOG_FILENAME_T(s) s
 #endif
 
-using log_clock = std::chrono::system_clock;
-using sink_ptr = std::shared_ptr<sinks::sink>;
+using log_clock	      = std::chrono::system_clock;
+using sink_ptr	      = std::shared_ptr<sinks::sink>;
 using sinks_init_list = std::initializer_list<sink_ptr>;
-using err_handler = std::function<void(const std::string& err_msg)>;
+using err_handler     = std::function<void(const std::string& err_msg)>;
 #ifdef SPDLOG_USE_STD_FORMAT
 namespace fmt_lib = std;
 
 using string_view_t = std::string_view;
-using memory_buf_t = std::string;
+using memory_buf_t  = std::string;
 
 template <typename... Args>
 #	if __cpp_lib_format >= 202207L
@@ -189,7 +189,7 @@ struct is_convertible_to_basic_format_string
 #	if defined(SPDLOG_WCHAR_FILENAMES) || \
 		defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 using wstring_view_t = std::wstring_view;
-using wmemory_buf_t = std::wstring;
+using wmemory_buf_t  = std::wstring;
 
 template <typename... Args>
 #		if __cpp_lib_format >= 202207L
@@ -203,7 +203,7 @@ using wformat_string_t = std::wstring_view;
 namespace fmt_lib = fmt;
 
 using string_view_t = fmt::basic_string_view<char>;
-using memory_buf_t = fmt::basic_memory_buffer<char, 250>;
+using memory_buf_t  = fmt::basic_memory_buffer<char, 250>;
 
 template <typename... Args> using format_string_t = fmt::format_string<Args...>;
 
@@ -232,7 +232,7 @@ struct is_convertible_to_basic_format_string
 #	if defined(SPDLOG_WCHAR_FILENAMES) || \
 		defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT)
 using wstring_view_t = fmt::basic_string_view<wchar_t>;
-using wmemory_buf_t = fmt::basic_memory_buffer<wchar_t, 250>;
+using wmemory_buf_t  = fmt::basic_memory_buffer<wchar_t, 250>;
 
 template <typename... Args>
 using wformat_string_t = fmt::wformat_string<Args...>;
@@ -244,7 +244,7 @@ using wformat_string_t = fmt::wformat_string<Args...>;
 #	ifndef _WIN32
 #		error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
 #	endif // _WIN32
-#endif // SPDLOG_WCHAR_TO_UTF8_SUPPORT
+#endif	       // SPDLOG_WCHAR_TO_UTF8_SUPPORT
 
 template <class T>
 struct is_convertible_to_any_format_string
@@ -275,13 +275,13 @@ using level_t = std::atomic<int>;
 namespace level
 {
 enum level_enum : int {
-	trace = SPDLOG_LEVEL_TRACE,
-	debug = SPDLOG_LEVEL_DEBUG,
-	info = SPDLOG_LEVEL_INFO,
-	warn = SPDLOG_LEVEL_WARN,
-	err = SPDLOG_LEVEL_ERROR,
+	trace	 = SPDLOG_LEVEL_TRACE,
+	debug	 = SPDLOG_LEVEL_DEBUG,
+	info	 = SPDLOG_LEVEL_INFO,
+	warn	 = SPDLOG_LEVEL_WARN,
+	err	 = SPDLOG_LEVEL_ERROR,
 	critical = SPDLOG_LEVEL_CRITICAL,
-	off = SPDLOG_LEVEL_OFF,
+	off	 = SPDLOG_LEVEL_OFF,
 	n_levels
 };
 
@@ -326,7 +326,7 @@ enum class color_mode { always, automatic, never };
 //
 enum class pattern_time_type {
 	local, // log localtime
-	utc // log utc
+	utc    // log utc
 };
 
 //
@@ -343,7 +343,7 @@ private:
 };
 
 [[noreturn]] SPDLOG_API void throw_spdlog_ex(const std::string& msg,
-					     int last_errno);
+					     int		last_errno);
 [[noreturn]] SPDLOG_API void throw_spdlog_ex(std::string msg);
 
 struct source_loc {
@@ -361,7 +361,7 @@ struct source_loc {
 		return line == 0;
 	}
 	const char* filename{ nullptr };
-	int line{ 0 };
+	int	    line{ 0 };
 	const char* funcname{ nullptr };
 };
 
@@ -378,7 +378,7 @@ struct file_event_handlers {
 	std::function<void(const filename_t& filename, std::FILE* file_stream)>
 		after_open;
 	std::function<void(const filename_t& filename, std::FILE* file_stream)>
-		before_close;
+							before_close;
 	std::function<void(const filename_t& filename)> after_close;
 };
 

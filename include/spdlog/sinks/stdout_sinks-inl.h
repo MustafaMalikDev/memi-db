@@ -33,13 +33,13 @@
 // so instead we use ::FileWrite
 #	include <spdlog/details/windows_include.h>
 
-#	ifndef _USING_V110_SDK71_ // fileapi.h doesn't exist in winxp
+#	ifndef _USING_V110_SDK71_   // fileapi.h doesn't exist in winxp
 #		include <fileapi.h> // WriteFile (..)
 #	endif
 
-#	include <io.h> // _get_osfhandle(..)
+#	include <io.h>	   // _get_osfhandle(..)
 #	include <stdio.h> // _fileno(..)
-#endif // WIN32
+#endif			   // WIN32
 
 namespace spdlog
 {
@@ -79,12 +79,12 @@ stdout_sink_base<ConsoleMutex>::log(const details::log_msg& msg)
 		return;
 	}
 	std::lock_guard<mutex_t> lock(mutex_);
-	memory_buf_t formatted;
+	memory_buf_t		 formatted;
 	formatter_->format(msg, formatted);
-	auto size = static_cast<DWORD>(formatted.size());
+	auto  size	    = static_cast<DWORD>(formatted.size());
 	DWORD bytes_written = 0;
-	bool ok = ::WriteFile(handle_, formatted.data(), size, &bytes_written,
-			      nullptr) != 0;
+	bool  ok = ::WriteFile(handle_, formatted.data(), size, &bytes_written,
+			       nullptr) != 0;
 	if (!ok) {
 		throw_spdlog_ex(
 			"stdout_sink_base: WriteFile() failed. GetLastError(): " +
@@ -92,10 +92,10 @@ stdout_sink_base<ConsoleMutex>::log(const details::log_msg& msg)
 	}
 #else
 	std::lock_guard<mutex_t> lock(mutex_);
-	memory_buf_t formatted;
+	memory_buf_t		 formatted;
 	formatter_->format(msg, formatted);
 	::fwrite(formatted.data(), sizeof(char), formatted.size(), file_);
-#endif // WIN32
+#endif			 // WIN32
 	::fflush(file_); // flush every line to terminal
 }
 

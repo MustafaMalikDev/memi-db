@@ -45,11 +45,11 @@ enum class async_msg_type { log, flush, terminate };
 // Async msg to move to/from the queue
 // Movable only. should never be copied
 struct async_msg : log_msg_buffer {
-	async_msg_type msg_type{ async_msg_type::log };
-	async_logger_ptr worker_ptr;
+	async_msg_type	   msg_type{ async_msg_type::log };
+	async_logger_ptr   worker_ptr;
 	std::promise<void> flush_promise;
 
-	async_msg() = default;
+	async_msg()  = default;
 	~async_msg() = default;
 
 	// should only be moved in or out of the queue..
@@ -67,12 +67,12 @@ struct async_msg : log_msg_buffer {
 	async_msg& operator=(async_msg&& other)
 	{
 		*static_cast<log_msg_buffer*>(this) = std::move(other);
-		msg_type = other.msg_type;
+		msg_type			    = other.msg_type;
 		worker_ptr = std::move(other.worker_ptr);
 		return *this;
 	}
 #else // (_MSC_VER) && _MSC_VER <= 1800
-	async_msg(async_msg&&) = default;
+	async_msg(async_msg&&)		  = default;
 	async_msg& operator=(async_msg&&) = default;
 #endif
 
@@ -112,7 +112,7 @@ struct async_msg : log_msg_buffer {
 class SPDLOG_API thread_pool {
 public:
 	using item_type = async_msg;
-	using q_type = details::mpmc_blocking_queue<item_type>;
+	using q_type	= details::mpmc_blocking_queue<item_type>;
 
 	thread_pool(size_t q_max_items, size_t threads_n,
 		    std::function<void()> on_thread_start,
@@ -124,26 +124,26 @@ public:
 	// message all threads to terminate gracefully and join them
 	~thread_pool();
 
-	thread_pool(const thread_pool&) = delete;
+	thread_pool(const thread_pool&)	      = delete;
 	thread_pool& operator=(thread_pool&&) = delete;
 
-	void post_log(async_logger_ptr&& worker_ptr,
-		      const details::log_msg& msg,
-		      async_overflow_policy overflow_policy);
-	std::future<void> post_flush(async_logger_ptr&& worker_ptr,
+	void		  post_log(async_logger_ptr&&	   worker_ptr,
+				   const details::log_msg& msg,
+				   async_overflow_policy   overflow_policy);
+	std::future<void> post_flush(async_logger_ptr&&	   worker_ptr,
 				     async_overflow_policy overflow_policy);
-	size_t overrun_counter();
-	void reset_overrun_counter();
-	size_t discard_counter();
-	void reset_discard_counter();
-	size_t queue_size();
+	size_t		  overrun_counter();
+	void		  reset_overrun_counter();
+	size_t		  discard_counter();
+	void		  reset_discard_counter();
+	size_t		  queue_size();
 
 private:
 	q_type q_;
 
 	std::vector<std::thread> threads_;
 
-	void post_async_msg_(async_msg&& new_msg,
+	void post_async_msg_(async_msg&&	   new_msg,
 			     async_overflow_policy overflow_policy);
 	void worker_loop_();
 

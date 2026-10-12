@@ -66,7 +66,7 @@ using callback_sink_st = callback_sink<details::null_mutex>;
 //
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
-callback_logger_mt(const std::string& logger_name,
+callback_logger_mt(const std::string&	      logger_name,
 		   const custom_log_callback& callback)
 {
 	return Factory::template create<sinks::callback_sink_mt>(logger_name,
@@ -75,7 +75,7 @@ callback_logger_mt(const std::string& logger_name,
 
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
-callback_logger_st(const std::string& logger_name,
+callback_logger_st(const std::string&	      logger_name,
 		   const custom_log_callback& callback)
 {
 	return Factory::template create<sinks::callback_sink_st>(logger_name,

@@ -36,7 +36,7 @@ public:
 	static std::string get(const std::string& key)
 	{
 		auto& context = get_context();
-		auto it = context.find(key);
+		auto  it      = context.find(key);
 		if (it != context.end()) {
 			return it->second;
 		}

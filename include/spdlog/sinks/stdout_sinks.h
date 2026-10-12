@@ -42,10 +42,10 @@ public:
 	~stdout_sink_base() override = default;
 
 	stdout_sink_base(const stdout_sink_base& other) = delete;
-	stdout_sink_base(stdout_sink_base&& other) = delete;
+	stdout_sink_base(stdout_sink_base&& other)	= delete;
 
 	stdout_sink_base& operator=(const stdout_sink_base& other) = delete;
-	stdout_sink_base& operator=(stdout_sink_base&& other) = delete;
+	stdout_sink_base& operator=(stdout_sink_base&& other)	   = delete;
 
 	void log(const details::log_msg& msg) override;
 	void flush() override;
@@ -55,8 +55,8 @@ public:
 		std::unique_ptr<spdlog::formatter> sink_formatter) override;
 
 protected:
-	mutex_t& mutex_;
-	FILE* file_;
+	mutex_t&			   mutex_;
+	FILE*				   file_;
 	std::unique_ptr<spdlog::formatter> formatter_;
 #ifdef _WIN32
 	HANDLE handle_;

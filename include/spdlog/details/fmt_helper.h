@@ -166,7 +166,7 @@ inline ToDuration time_fraction(log_clock::time_point tp)
 	using std::chrono::duration_cast;
 	using std::chrono::seconds;
 	auto duration = tp.time_since_epoch();
-	auto secs = duration_cast<seconds>(duration);
+	auto secs     = duration_cast<seconds>(duration);
 	return duration_cast<ToDuration>(duration) -
 	       duration_cast<ToDuration>(secs);
 }

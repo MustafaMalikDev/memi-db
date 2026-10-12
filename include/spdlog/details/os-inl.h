@@ -41,7 +41,7 @@
 #ifdef _WIN32
 #	include <spdlog/details/windows_include.h>
 #	include <fileapi.h> // for FlushFileBuffers
-#	include <io.h> // for _get_osfhandle, _isatty, _fileno
+#	include <io.h>	     // for _get_osfhandle, _isatty, _fileno
 #	include <process.h> // for _get_pid
 
 #	ifdef __MINGW32__
@@ -83,7 +83,7 @@
 #	include <AvailabilityMacros.h>
 #endif
 
-#ifndef __has_feature // Clang - feature checking macros.
+#ifndef __has_feature		   // Clang - feature checking macros.
 #	define __has_feature(x) 0 // Compatibility with non-clang compilers.
 #endif
 
@@ -169,9 +169,9 @@ SPDLOG_INLINE bool fopen_s(FILE** fp, const filename_t& filename,
 #	if defined(SPDLOG_PREVENT_CHILD_FD)
 	const int mode_flag = mode == SPDLOG_FILENAME_T("ab") ? O_APPEND :
 								O_TRUNC;
-	const int fd = ::open((filename.c_str()),
-			      O_CREAT | O_WRONLY | O_CLOEXEC | mode_flag,
-			      mode_t(0644));
+	const int fd	    = ::open((filename.c_str()),
+				     O_CREAT | O_WRONLY | O_CLOEXEC | mode_flag,
+				     mode_t(0644));
 	if (fd == -1) {
 		return true;
 	}
@@ -290,7 +290,7 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm& tm)
 #ifdef _WIN32
 #	if _WIN32_WINNT < _WIN32_WINNT_WS08
 	TIME_ZONE_INFORMATION tzinfo;
-	auto rv = ::GetTimeZoneInformation(&tzinfo);
+	auto		      rv = ::GetTimeZoneInformation(&tzinfo);
 #	else
 	DYNAMIC_TIME_ZONE_INFORMATION tzinfo;
 	auto rv = ::GetDynamicTimeZoneInformation(&tzinfo);
@@ -314,10 +314,10 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm& tm)
 	struct helper {
 		static long int calculate_gmt_offset(
 			const std::tm& localtm = details::os::localtime(),
-			const std::tm& gmtm = details::os::gmtime())
+			const std::tm& gmtm    = details::os::gmtime())
 		{
 			int local_year = localtm.tm_year + (1900 - 1);
-			int gmt_year = gmtm.tm_year + (1900 - 1);
+			int gmt_year   = gmtm.tm_year + (1900 - 1);
 
 			long int days = (
 				// difference in day of year
@@ -369,11 +369,11 @@ SPDLOG_INLINE size_t _thread_id() SPDLOG_NOEXCEPT
 	return static_cast<size_t>(::syscall(SYS_gettid));
 #elif defined(_AIX)
 	struct __pthrdsinfo buf;
-	int reg_size = 0;
-	pthread_t pt = pthread_self();
+	int		    reg_size = 0;
+	pthread_t	    pt	     = pthread_self();
 	int retval = pthread_getthrds_np(&pt, PTHRDSINFO_QUERY_TID, &buf,
 					 sizeof(buf), NULL, &reg_size);
-	int tid = (!retval) ? buf.__pi_tid : 0;
+	int tid	   = (!retval) ? buf.__pi_tid : 0;
 	return static_cast<size_t>(tid);
 #elif defined(__DragonFly__) || defined(__FreeBSD__)
 	return static_cast<size_t>(::pthread_getthreadid_np());
@@ -647,8 +647,8 @@ std::string SPDLOG_INLINE getenv(const char* field)
 	return std::string{}; // not supported under uwp
 #	else
 	size_t len = 0;
-	char buf[128];
-	bool ok = ::getenv_s(&len, buf, sizeof(buf), field) == 0;
+	char   buf[128];
+	bool   ok = ::getenv_s(&len, buf, sizeof(buf), field) == 0;
 	return ok ? buf : std::string{};
 #	endif
 #else // revert to getenv

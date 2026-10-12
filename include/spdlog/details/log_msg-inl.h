@@ -53,9 +53,9 @@ log_msg::log_msg(spdlog::source_loc loc, string_view_t a_logger_name,
 {
 }
 
-SPDLOG_INLINE log_msg::log_msg(string_view_t a_logger_name,
+SPDLOG_INLINE log_msg::log_msg(string_view_t		 a_logger_name,
 			       spdlog::level::level_enum lvl,
-			       spdlog::string_view_t msg)
+			       spdlog::string_view_t	 msg)
 	: log_msg(os::now(), source_loc{}, a_logger_name, lvl, msg)
 {
 }

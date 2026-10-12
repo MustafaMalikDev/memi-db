@@ -24,16 +24,21 @@
 /*+                 HELPER MACROS                +*/
 /*+----------------------------------------------+*/
 
+#define MEMI_FORCE_USE [[nodiscard]]
+#define MEMI_MAYBE [[maybe_unused]]
+
 #define MEMI_DECLARE_SINGLETON(clazz, ...) \
-	[[nodiscard]] static clazz& instance(__VA_ARGS__)
+	MEMI_FORCE_USE static clazz& instance(__VA_ARGS__)
+
+#define MEMI_DEFINE_SINGLETON(clazz, ...) clazz& clazz::instance(__VA_ARGS__)
 
 /* inspired by Qt source code */
-#define MEMI_NO_COPY(clazz)           \
-	clazz(const clazz&) = delete; \
+#define MEMI_NO_COPY(clazz)                      \
+	clazz(const clazz&)	       = delete; \
 	clazz& operator=(const clazz&) = delete;
 
-#define MEMI_NO_MOVE(clazz)            \
-	clazz(const clazz&&) = delete; \
+#define MEMI_NO_MOVE(clazz)                       \
+	clazz(const clazz&&)		= delete; \
 	clazz& operator=(const clazz&&) = delete;
 
 #define MEMI_NO_COPY_MOVE(clazz) \

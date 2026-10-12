@@ -68,10 +68,10 @@ public:
 
 protected:
 	std::chrono::microseconds max_skip_duration_;
-	log_clock::time_point last_msg_time_;
-	std::string last_msg_payload_;
-	size_t skip_counter_ = 0;
-	level::level_enum log_level_;
+	log_clock::time_point	  last_msg_time_;
+	std::string		  last_msg_payload_;
+	size_t			  skip_counter_ = 0;
+	level::level_enum	  log_level_;
 
 	void sink_it_(const details::log_msg& msg) override
 	{
@@ -102,7 +102,7 @@ protected:
 		// log current message
 		dist_sink<Mutex>::sink_it_(msg);
 		last_msg_time_ = msg.time;
-		skip_counter_ = 0;
+		skip_counter_  = 0;
 		last_msg_payload_.assign(msg.payload.data(),
 					 msg.payload.data() +
 						 msg.payload.size());

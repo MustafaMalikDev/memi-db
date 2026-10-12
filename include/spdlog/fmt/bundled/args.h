@@ -26,7 +26,7 @@
 #define FMT_ARGS_H_
 
 #include <functional> // std::reference_wrapper
-#include <memory> // std::unique_ptr
+#include <memory>     // std::unique_ptr
 #include <vector>
 
 #include "core.h"
@@ -81,9 +81,9 @@ public:
 	{
 		auto new_node =
 			std::unique_ptr<typed_node<T> >(new typed_node<T>(arg));
-		auto& value = new_node->value;
+		auto& value    = new_node->value;
 		new_node->next = std::move(head_);
-		head_ = std::move(new_node);
+		head_	       = std::move(new_node);
 		return value;
 	}
 };
@@ -133,7 +133,7 @@ private:
 		std::basic_string<char_type>, T>;
 
 	// Storage of basic_format_arg must be contiguous.
-	std::vector<basic_format_arg<Context> > data_;
+	std::vector<basic_format_arg<Context> >		data_;
 	std::vector<detail::named_arg_info<char_type> > named_info_;
 
 	// Storage of arguments not fitting into basic_format_arg must grow
@@ -166,7 +166,7 @@ private:
 	{
 		if (named_info_.empty()) {
 			constexpr const detail::named_arg_info<char_type>*
-				zero_ptr{ nullptr };
+					zero_ptr{ nullptr };
 			data_.insert(data_.begin(), { zero_ptr, 0 });
 		}
 		data_.emplace_back(

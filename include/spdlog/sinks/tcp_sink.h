@@ -49,8 +49,8 @@ namespace sinks
 
 struct tcp_sink_config {
 	std::string server_host;
-	int server_port;
-	bool lazy_connect =
+	int	    server_port;
+	bool	    lazy_connect =
 		false; // if true connect on first log call instead of on construction
 
 	tcp_sink_config(std::string host, int port)
@@ -93,7 +93,7 @@ protected:
 	void flush_() override
 	{
 	}
-	tcp_sink_config config_;
+	tcp_sink_config	    config_;
 	details::tcp_client client_;
 };
 

@@ -59,14 +59,14 @@ public:
 		::closelog();
 	}
 
-	syslog_sink(const syslog_sink&) = delete;
+	syslog_sink(const syslog_sink&)		   = delete;
 	syslog_sink& operator=(const syslog_sink&) = delete;
 
 protected:
 	void sink_it_(const details::log_msg& msg) override
 	{
 		string_view_t payload;
-		memory_buf_t formatted;
+		memory_buf_t  formatted;
 		if (enable_formatting_) {
 			base_sink<Mutex>::formatter_->format(msg, formatted);
 			payload = string_view_t(formatted.data(),

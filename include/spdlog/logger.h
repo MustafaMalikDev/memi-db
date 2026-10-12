@@ -104,7 +104,7 @@ public:
 	logger(const logger& other);
 	logger(logger&& other) SPDLOG_NOEXCEPT;
 	logger& operator=(logger other) SPDLOG_NOEXCEPT;
-	void swap(spdlog::logger& other) SPDLOG_NOEXCEPT;
+	void	swap(spdlog::logger& other) SPDLOG_NOEXCEPT;
 
 	template <typename... Args>
 	void log(source_loc loc, level::level_enum lvl,
@@ -139,7 +139,7 @@ public:
 	void log(log_clock::time_point log_time, source_loc loc,
 		 level::level_enum lvl, string_view_t msg)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -151,7 +151,7 @@ public:
 
 	void log(source_loc loc, level::level_enum lvl, string_view_t msg)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -221,7 +221,7 @@ public:
 	void log(log_clock::time_point log_time, source_loc loc,
 		 level::level_enum lvl, wstring_view_t msg)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -237,7 +237,7 @@ public:
 
 	void log(source_loc loc, level::level_enum lvl, wstring_view_t msg)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -350,7 +350,7 @@ public:
 	//     set_formatter(make_unique<pattern_formatter>(pattern, time_type))
 	// Note: each sink will get a new instance of a formatter object, replacing the old one.
 	void
-	set_pattern(std::string pattern,
+	set_pattern(std::string	      pattern,
 		    pattern_time_type time_type = pattern_time_type::local);
 
 	// backtrace support.
@@ -360,8 +360,8 @@ public:
 	void dump_backtrace();
 
 	// flush functions
-	void flush();
-	void flush_on(level::level_enum log_level);
+	void		  flush();
+	void		  flush_on(level::level_enum log_level);
 	level::level_enum flush_level() const;
 
 	// sinks
@@ -376,19 +376,19 @@ public:
 	virtual std::shared_ptr<logger> clone(std::string logger_name);
 
 protected:
-	std::string name_;
+	std::string	      name_;
 	std::vector<sink_ptr> sinks_;
-	spdlog::level_t level_{ level::info };
-	spdlog::level_t flush_level_{ level::off };
-	err_handler custom_err_handler_{ nullptr };
-	details::backtracer tracer_;
+	spdlog::level_t	      level_{ level::info };
+	spdlog::level_t	      flush_level_{ level::off };
+	err_handler	      custom_err_handler_{ nullptr };
+	details::backtracer   tracer_;
 
 	// common implementation for after templated public api has been resolved
 	template <typename... Args>
 	void log_(source_loc loc, level::level_enum lvl, string_view_t fmt,
 		  Args&&... args)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -417,7 +417,7 @@ protected:
 	void log_(source_loc loc, level::level_enum lvl, wstring_view_t fmt,
 		  Args&&... args)
 	{
-		bool log_enabled = should_log(lvl);
+		bool log_enabled       = should_log(lvl);
 		bool traceback_enabled = tracer_.enabled();
 		if (!log_enabled && !traceback_enabled) {
 			return;
@@ -445,12 +445,12 @@ protected:
 
 	// log the given message (if the given log level is high enough),
 	// and save backtrace (if backtrace is enabled).
-	void log_it_(const details::log_msg& log_msg, bool log_enabled,
-		     bool traceback_enabled);
+	void	     log_it_(const details::log_msg& log_msg, bool log_enabled,
+			     bool traceback_enabled);
 	virtual void sink_it_(const details::log_msg& msg);
 	virtual void flush_();
-	void dump_backtrace_();
-	bool should_flush_(const details::log_msg& msg);
+	void	     dump_backtrace_();
+	bool	     should_flush_(const details::log_msg& msg);
 
 	// handle errors during logging.
 	// default handler prints the error to stderr at max rate of 1 message/sec.

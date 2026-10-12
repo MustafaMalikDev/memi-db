@@ -51,7 +51,7 @@ namespace detail
 {
 
 template <typename Char>
-void write_escaped_path(basic_memory_buffer<Char>& quoted,
+void write_escaped_path(basic_memory_buffer<Char>&   quoted,
 			const std::filesystem::path& p)
 {
 	write_escaped_string<Char>(std::back_inserter(quoted),
@@ -59,7 +59,7 @@ void write_escaped_path(basic_memory_buffer<Char>& quoted,
 }
 #	ifdef _WIN32
 template <>
-inline void write_escaped_path<char>(basic_memory_buffer<char>& quoted,
+inline void write_escaped_path<char>(basic_memory_buffer<char>&	  quoted,
 				     const std::filesystem::path& p)
 {
 	auto s = p.u8string();
@@ -72,7 +72,7 @@ inline void write_escaped_path<char>(basic_memory_buffer<char>& quoted,
 template <>
 inline void write_escaped_path<std::filesystem::path::value_type>(
 	basic_memory_buffer<std::filesystem::path::value_type>& quoted,
-	const std::filesystem::path& p)
+	const std::filesystem::path&				p)
 {
 	write_escaped_string<std::filesystem::path::value_type>(
 		std::back_inserter(quoted), p.native());
@@ -116,7 +116,7 @@ template <typename Char> struct formatter<std::monostate, Char> {
 		-> decltype(ctx.out())
 	{
 		auto out = ctx.out();
-		out = detail::write<Char>(out, "monostate");
+		out	 = detail::write<Char>(out, "monostate");
 		return out;
 	}
 };

@@ -30,7 +30,7 @@ namespace memi
 
 class port final {
 private:
-	port() = default;
+	port()	= default;
 	~port() = default;
 
 	MEMI_NO_COPY_MOVE(port)
@@ -39,32 +39,15 @@ private:
 	bool is_available() const;
 
 public:
-	MEMI_DECLARE_SINGLETON(port, int argc, char* argv[])
+	MEMI_DECLARE_SINGLETON(port, int argc, char* argv[]);
+
+	inline uint16_t get_port() const noexcept
 	{
-		static port p;
-		p.m_args = args2vec(argc, argv);
-		std::string_view port_str = extract_flag("port", p.m_args);
-
-		if (!port_str.empty()) {
-			int16_t np;
-
-			if ((np = stos(port_str)) > 0) {
-				p.m_port = np;
-				spdlog::info(
-					"custom port requested. set port to: {}",
-					np);
-			} else {
-				spdlog::warn(
-					"could not set custom port. defaulting to: {}",
-					MEMIDB_DEFAULT_PORT);
-			}
-		}
-
-		return p;
+		return m_port;
 	}
 
 private:
-	uint16_t m_port{ MEMIDB_DEFAULT_PORT };
+	uint16_t		      m_port{ MEMIDB_DEFAULT_PORT };
 	std::vector<std::string_view> m_args{};
 };
 

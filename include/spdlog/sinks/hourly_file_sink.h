@@ -46,7 +46,7 @@ namespace sinks
 struct hourly_filename_calculator {
 	// Create filename for the form basename.YYYY-MM-DD-H
 	static filename_t calc_filename(const filename_t& filename,
-					const tm& now_tm)
+					const tm&	  now_tm)
 	{
 		filename_t basename, ext;
 		std::tie(basename, ext) =
@@ -68,7 +68,7 @@ class hourly_file_sink final : public base_sink<Mutex> {
 public:
 	// create hourly file sink which rotates on given time
 	hourly_file_sink(filename_t base_filename, bool truncate = false,
-			 uint16_t max_files = 0,
+			 uint16_t		    max_files	   = 0,
 			 const file_event_handlers& event_handlers = {})
 		: base_filename_(std::move(base_filename))
 		, file_helper_{ event_handlers }
@@ -76,12 +76,12 @@ public:
 		, max_files_(max_files)
 		, filenames_q_()
 	{
-		auto now = log_clock::now();
+		auto now      = log_clock::now();
 		auto filename = FileNameCalc::calc_filename(base_filename_,
 							    now_tm(now));
 		file_helper_.open(filename, truncate_);
 		remove_init_file_ = file_helper_.size() == 0;
-		rotation_tp_ = next_rotation_tp_();
+		rotation_tp_	  = next_rotation_tp_();
 
 		if (max_files_ > 0) {
 			init_filenames_q_();
@@ -97,7 +97,7 @@ public:
 protected:
 	void sink_it_(const details::log_msg& msg) override
 	{
-		auto time = msg.time;
+		auto time	   = msg.time;
 		bool should_rotate = time >= rotation_tp_;
 		if (should_rotate) {
 			if (remove_init_file_) {
@@ -133,7 +133,7 @@ private:
 		filenames_q_ = details::circular_q<filename_t>(
 			static_cast<size_t>(max_files_));
 		std::vector<filename_t> filenames;
-		auto now = log_clock::now();
+		auto			now = log_clock::now();
 		while (filenames.size() < max_files_) {
 			auto filename = FileNameCalc::calc_filename(
 				base_filename_, now_tm(now));
@@ -157,10 +157,10 @@ private:
 
 	log_clock::time_point next_rotation_tp_()
 	{
-		auto now = log_clock::now();
-		tm date = now_tm(now);
-		date.tm_min = 0;
-		date.tm_sec = 0;
+		auto now	   = log_clock::now();
+		tm   date	   = now_tm(now);
+		date.tm_min	   = 0;
+		date.tm_sec	   = 0;
 		auto rotation_time = log_clock::from_time_t(std::mktime(&date));
 		if (rotation_time > now) {
 			return rotation_time;
@@ -191,13 +191,13 @@ private:
 		filenames_q_.push_back(std::move(current_file));
 	}
 
-	filename_t base_filename_;
-	log_clock::time_point rotation_tp_;
-	details::file_helper file_helper_;
-	bool truncate_;
-	uint16_t max_files_;
+	filename_t			base_filename_;
+	log_clock::time_point		rotation_tp_;
+	details::file_helper		file_helper_;
+	bool				truncate_;
+	uint16_t			max_files_;
 	details::circular_q<filename_t> filenames_q_;
-	bool remove_init_file_;
+	bool				remove_init_file_;
 };
 
 using hourly_file_sink_mt = hourly_file_sink<std::mutex>;

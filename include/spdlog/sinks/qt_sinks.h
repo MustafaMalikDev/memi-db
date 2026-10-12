@@ -81,7 +81,7 @@ protected:
 	}
 
 private:
-	QObject* qt_object_ = nullptr;
+	QObject*    qt_object_ = nullptr;
 	std::string meta_method_;
 };
 
@@ -140,7 +140,7 @@ public:
 	}
 
 	void set_level_color(level::level_enum color_level,
-			     QTextCharFormat format)
+			     QTextCharFormat   format)
 	{
 		// std::lock_guard<Mutex> lock(base_sink<Mutex>::mutex_);
 		colors_.at(static_cast<size_t>(color_level)) = format;
@@ -173,13 +173,13 @@ protected:
 			, color_range_end(color_range_end)
 		{
 		}
-		int max_lines;
-		QTextEdit* q_text_edit;
-		QString payload;
+		int		max_lines;
+		QTextEdit*	q_text_edit;
+		QString		payload;
 		QTextCharFormat default_color;
 		QTextCharFormat level_color;
-		int color_range_start;
-		int color_range_end;
+		int		color_range_start;
+		int		color_range_end;
 	};
 
 	void sink_it_(const details::log_msg& msg) override
@@ -192,7 +192,7 @@ protected:
 		// apply the color to the color range in the formatted message.
 		QString payload;
 		int color_range_start = static_cast<int>(msg.color_range_start);
-		int color_range_end = static_cast<int>(msg.color_range_end);
+		int color_range_end   = static_cast<int>(msg.color_range_end);
 		if (is_utf8_) {
 			payload = QString::fromUtf8(
 				str.data(), static_cast<int>(str.size()));
@@ -212,10 +212,10 @@ protected:
 				str.data(), static_cast<int>(str.size()));
 		}
 
-		invoke_params params{ max_lines_, // max lines
+		invoke_params params{ max_lines_,    // max lines
 				      qt_text_edit_, // text edit to append to
-				      std::move(payload), // text to append
-				      default_color_, // default color
+				      std::move(payload),    // text to append
+				      default_color_,	     // default color
 				      colors_.at(msg.level), // color to apply
 				      color_range_start, // color range start
 				      color_range_end }; // color range end
@@ -235,7 +235,7 @@ protected:
 
 	static void invoke_method_(invoke_params params)
 	{
-		auto* document = params.q_text_edit->document();
+		auto*	    document = params.q_text_edit->document();
 		QTextCursor cursor(document);
 
 		// remove first blocks if number of blocks exceeds max_lines
@@ -269,18 +269,18 @@ protected:
 		cursor.insertText(params.payload.mid(params.color_range_end));
 	}
 
-	QTextEdit* qt_text_edit_;
-	int max_lines_;
-	bool is_utf8_;
-	QTextCharFormat default_color_;
+	QTextEdit*				     qt_text_edit_;
+	int					     max_lines_;
+	bool					     is_utf8_;
+	QTextCharFormat				     default_color_;
 	std::array<QTextCharFormat, level::n_levels> colors_;
 };
 
 #include "spdlog/details/null_mutex.h"
 #include <mutex>
 
-using qt_sink_mt = qt_sink<std::mutex>;
-using qt_sink_st = qt_sink<details::null_mutex>;
+using qt_sink_mt       = qt_sink<std::mutex>;
+using qt_sink_st       = qt_sink<details::null_mutex>;
 using qt_color_sink_mt = qt_color_sink<std::mutex>;
 using qt_color_sink_st = qt_color_sink<details::null_mutex>;
 } // namespace sinks
@@ -329,7 +329,7 @@ qt_logger_st(const std::string& logger_name, QPlainTextEdit* qt_object,
 // log to QObject
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger> qt_logger_mt(const std::string& logger_name,
-					    QObject* qt_object,
+					    QObject*	       qt_object,
 					    const std::string& meta_method)
 {
 	return Factory::template create<sinks::qt_sink_mt>(
@@ -338,7 +338,7 @@ inline std::shared_ptr<logger> qt_logger_mt(const std::string& logger_name,
 
 template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger> qt_logger_st(const std::string& logger_name,
-					    QObject* qt_object,
+					    QObject*	       qt_object,
 					    const std::string& meta_method)
 {
 	return Factory::template create<sinks::qt_sink_st>(

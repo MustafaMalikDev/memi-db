@@ -144,7 +144,7 @@ public:
 	}
 };
 
-using cstring_view = basic_cstring_view<char>;
+using cstring_view  = basic_cstring_view<char>;
 using wcstring_view = basic_cstring_view<wchar_t>;
 
 template <typename Char> struct formatter<std::error_code, Char> {
@@ -156,14 +156,14 @@ template <typename Char> struct formatter<std::error_code, Char> {
 
 	template <typename FormatContext>
 	FMT_CONSTEXPR auto format(const std::error_code& ec,
-				  FormatContext& ctx) const
+				  FormatContext&	 ctx) const
 		-> decltype(ctx.out())
 	{
 		auto out = ctx.out();
-		out = detail::write_bytes(out, ec.category().name(),
-					  basic_format_specs<Char>());
-		out = detail::write<Char>(out, Char(':'));
-		out = detail::write<Char>(out, ec.value());
+		out	 = detail::write_bytes(out, ec.category().name(),
+					       basic_format_specs<Char>());
+		out	 = detail::write<Char>(out, Char(':'));
+		out	 = detail::write<Char>(out, ec.value());
 		return out;
 	}
 };
@@ -281,7 +281,7 @@ private:
 	}
 
 public:
-	buffered_file(const buffered_file&) = delete;
+	buffered_file(const buffered_file&)  = delete;
 	void operator=(const buffered_file&) = delete;
 
 	// Constructs a buffered_file object which doesn't represent any file.
@@ -301,7 +301,7 @@ public:
 	buffered_file& operator=(buffered_file&& other)
 	{
 		close();
-		file_ = other.file_;
+		file_	    = other.file_;
 		other.file_ = nullptr;
 		return *this;
 	}
@@ -354,11 +354,11 @@ public:
 	enum {
 		RDONLY = FMT_POSIX(O_RDONLY), // Open for reading only.
 		WRONLY = FMT_POSIX(O_WRONLY), // Open for writing only.
-		RDWR = FMT_POSIX(O_RDWR), // Open for reading and writing.
+		RDWR   = FMT_POSIX(O_RDWR),   // Open for reading and writing.
 		CREATE =
 			FMT_POSIX(O_CREAT), // Create if the file doesn't exist.
 		APPEND = FMT_POSIX(O_APPEND), // Open in append mode.
-		TRUNC = FMT_POSIX(O_TRUNC) // Truncate the content of the file.
+		TRUNC  = FMT_POSIX(O_TRUNC) // Truncate the content of the file.
 	};
 
 	// Constructs a file object which doesn't represent any file.
@@ -370,7 +370,7 @@ public:
 	file(cstring_view path, int oflag);
 
 public:
-	file(const file&) = delete;
+	file(const file&)	    = delete;
 	void operator=(const file&) = delete;
 
 	file(file&& other) noexcept : fd_(other.fd_)
@@ -382,7 +382,7 @@ public:
 	file& operator=(file&& other)
 	{
 		close();
-		fd_ = other.fd_;
+		fd_	  = other.fd_;
 		other.fd_ = -1;
 		return *this;
 	}
@@ -436,18 +436,18 @@ long getpagesize();
 FMT_BEGIN_DETAIL_NAMESPACE
 
 struct buffer_size {
-	buffer_size() = default;
-	size_t value = 0;
+	buffer_size()	  = default;
+	size_t	    value = 0;
 	buffer_size operator=(size_t val) const
 	{
-		auto bs = buffer_size();
+		auto bs	 = buffer_size();
 		bs.value = val;
 		return bs;
 	}
 };
 
 struct ostream_params {
-	int oflag = file::WRONLY | file::CREATE | file::TRUNC;
+	int    oflag	   = file::WRONLY | file::CREATE | file::TRUNC;
 	size_t buffer_size = BUFSIZ > 32768 ? BUFSIZ : 32768;
 
 	ostream_params()

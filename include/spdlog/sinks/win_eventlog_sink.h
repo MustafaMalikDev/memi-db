@@ -78,7 +78,7 @@ struct local_alloc_t {
 	{
 	}
 
-	local_alloc_t(local_alloc_t const&) = delete;
+	local_alloc_t(local_alloc_t const&)	       = delete;
 	local_alloc_t& operator=(local_alloc_t const&) = delete;
 
 	~local_alloc_t() SPDLOG_NOEXCEPT
@@ -98,17 +98,17 @@ struct win32_error : public spdlog_ex {
 		std::string system_message;
 
 		local_alloc_t format_message_result{};
-		auto format_message_succeeded = ::FormatMessageA(
+		auto	      format_message_succeeded = ::FormatMessageA(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER |
 				FORMAT_MESSAGE_FROM_SYSTEM |
 				FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr, error_code,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPSTR)&format_message_result.hlocal_, 0, nullptr);
+			(LPSTR) &format_message_result.hlocal_, 0, nullptr);
 
 		if (format_message_succeeded && format_message_result.hlocal_) {
 			system_message = fmt_lib::format(
-				" ({})", (LPSTR)format_message_result.hlocal_);
+				" ({})", (LPSTR) format_message_result.hlocal_);
 		}
 
 		return fmt_lib::format("{}: {}{}", user_message, error_code,
@@ -116,7 +116,7 @@ struct win32_error : public spdlog_ex {
 	}
 
 	explicit win32_error(std::string const& func_name,
-			     DWORD error = GetLastError())
+			     DWORD		error = GetLastError())
 		: spdlog_ex(format(func_name, error))
 	{
 	}
@@ -142,7 +142,7 @@ public:
 
 		sid_t result;
 		result.buffer_.resize(sid_length);
-		if (!::CopySid(sid_length, (PSID)result.as_sid(), psid)) {
+		if (!::CopySid(sid_length, (PSID) result.as_sid(), psid)) {
 			SPDLOG_THROW(win32_error("CopySid"));
 		}
 
@@ -152,7 +152,7 @@ public:
 	/** Retrieves pointer to the internal buffer contents as SID* */
 	SID* as_sid() const
 	{
-		return buffer_.empty() ? nullptr : (SID*)buffer_.data();
+		return buffer_.empty() ? nullptr : (SID*) buffer_.data();
 	}
 
 	/** Get SID for the current user */
@@ -190,14 +190,14 @@ public:
 		// get user token
 		std::vector<unsigned char> buffer(static_cast<size_t>(tusize));
 		if (!::GetTokenInformation(current_process_token.token_handle_,
-					   TokenUser, (LPVOID)buffer.data(),
+					   TokenUser, (LPVOID) buffer.data(),
 					   tusize, &tusize)) {
 			SPDLOG_THROW(win32_error("GetTokenInformation"));
 		}
 
 		// create a wrapper of the SID data as stored in the user token
 		return sid_t::duplicate_sid(
-			((TOKEN_USER*)buffer.data())->User.Sid);
+			((TOKEN_USER*) buffer.data())->User.Sid);
 	}
 };
 
@@ -227,7 +227,7 @@ struct eventlog {
 
 	static WORD get_event_category(details::log_msg const& msg)
 	{
-		return (WORD)msg.level;
+		return (WORD) msg.level;
 	}
 };
 
@@ -238,10 +238,10 @@ struct eventlog {
  */
 template <typename Mutex> class win_eventlog_sink : public base_sink<Mutex> {
 private:
-	HANDLE hEventLog_{ NULL };
+	HANDLE		hEventLog_{ NULL };
 	internal::sid_t current_user_sid_;
-	std::string source_;
-	DWORD event_id_;
+	std::string	source_;
+	DWORD		event_id_;
 
 	HANDLE event_log_handle()
 	{
@@ -249,7 +249,7 @@ private:
 			hEventLog_ = ::RegisterEventSourceA(nullptr,
 							    source_.c_str());
 			if (!hEventLog_ ||
-			    hEventLog_ == (HANDLE)ERROR_ACCESS_DENIED) {
+			    hEventLog_ == (HANDLE) ERROR_ACCESS_DENIED) {
 				SPDLOG_THROW(internal::win32_error(
 					"RegisterEventSource"));
 			}
@@ -263,7 +263,7 @@ protected:
 	{
 		using namespace internal;
 
-		bool succeeded;
+		bool	     succeeded;
 		memory_buf_t formatted;
 		base_sink<Mutex>::formatter_->format(msg, formatted);
 		formatted.push_back('\0');
@@ -274,13 +274,13 @@ protected:
 			string_view_t(formatted.data(), formatted.size()), buf);
 
 		LPCWSTR lp_wstr = buf.data();
-		succeeded = static_cast<bool>(::ReportEventW(
+		succeeded	= static_cast<bool>(::ReportEventW(
 			event_log_handle(), eventlog::get_event_type(msg),
 			eventlog::get_event_category(msg), event_id_,
 			current_user_sid_.as_sid(), 1, 0, &lp_wstr, nullptr));
 #else
 		LPCSTR lp_str = formatted.data();
-		succeeded = static_cast<bool>(::ReportEventA(
+		succeeded     = static_cast<bool>(::ReportEventA(
 			event_log_handle(), eventlog::get_event_type(msg),
 			eventlog::get_event_category(msg), event_id_,
 			current_user_sid_.as_sid(), 1, 0, &lp_str, nullptr));

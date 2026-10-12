@@ -41,8 +41,8 @@ FMT_CONSTEXPR inline counting_iterator copy_str(InputIt begin, InputIt end,
 template <typename OutputIt> class truncating_iterator_base {
 protected:
 	OutputIt out_;
-	size_t limit_;
-	size_t count_ = 0;
+	size_t	 limit_;
+	size_t	 count_ = 0;
 
 	truncating_iterator_base()
 		: out_()
@@ -60,8 +60,8 @@ public:
 	using iterator_category = std::output_iterator_tag;
 	using value_type = typename std::iterator_traits<OutputIt>::value_type;
 	using difference_type = std::ptrdiff_t;
-	using pointer = void;
-	using reference = void;
+	using pointer	      = void;
+	using reference	      = void;
 	FMT_UNCHECKED_ITERATOR(truncating_iterator_base);
 
 	OutputIt base() const
@@ -402,8 +402,8 @@ constexpr auto parse_tail(T head, S format_str)
 
 template <typename T, typename Char> struct parse_specs_result {
 	formatter<T, Char> fmt;
-	size_t end;
-	int next_arg_id;
+	size_t		   end;
+	int		   next_arg_id;
 };
 
 constexpr int manual_indexing_id = -1;
@@ -415,7 +415,7 @@ constexpr parse_specs_result<T, Char> parse_specs(basic_string_view<Char> str,
 	str.remove_prefix(pos);
 	auto ctx = compile_parse_context<Char>(str, max_value<int>(), nullptr,
 					       {}, next_arg_id);
-	auto f = formatter<T, Char>();
+	auto f	 = formatter<T, Char>();
 	auto end = f.parse(ctx);
 	return { f, pos + fmt::detail::to_unsigned(end - str.data()),
 		 next_arg_id == 0 ? manual_indexing_id : ctx.next_arg_id() };
@@ -449,13 +449,13 @@ template <typename Char> struct arg_id_handler {
 
 template <typename Char> struct parse_arg_id_result {
 	arg_ref<Char> arg_id;
-	const Char* arg_id_end;
+	const Char*   arg_id_end;
 };
 
 template <int ID, typename Char>
 constexpr auto parse_arg_id(const Char* begin, const Char* end)
 {
-	auto handler = arg_id_handler<Char>{ arg_ref<Char>{} };
+	auto handler	= arg_id_handler<Char>{ arg_ref<Char>{} };
 	auto arg_id_end = parse_arg_id(begin, end, handler);
 	return parse_arg_id_result<Char>{ handler.arg_id, arg_id_end };
 }
@@ -473,10 +473,10 @@ template <typename T, typename Args, size_t END_POS, int ARG_INDEX, int NEXT_ID,
 	  typename S>
 constexpr auto parse_replacement_field_then_tail(S format_str)
 {
-	using char_type = typename S::char_type;
-	constexpr auto str = basic_string_view<char_type>(format_str);
-	constexpr char_type c = END_POS != str.size() ? str[END_POS] :
-							char_type();
+	using char_type		= typename S::char_type;
+	constexpr auto	    str = basic_string_view<char_type>(format_str);
+	constexpr char_type c	= END_POS != str.size() ? str[END_POS] :
+							  char_type();
 	if constexpr (c == '}') {
 		return parse_tail<Args, END_POS + 1, NEXT_ID>(
 			field<char_type, typename field_type<T>::type,
@@ -509,7 +509,7 @@ constexpr auto parse_replacement_field_then_tail(S format_str)
 template <typename Args, size_t POS, int ID, typename S>
 constexpr auto compile_format_string(S format_str)
 {
-	using char_type = typename S::char_type;
+	using char_type	   = typename S::char_type;
 	constexpr auto str = basic_string_view<char_type>(format_str);
 	if constexpr (str[POS] == '{') {
 		if constexpr (POS + 1 == str.size())

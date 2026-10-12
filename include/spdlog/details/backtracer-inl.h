@@ -30,21 +30,21 @@ namespace details
 SPDLOG_INLINE backtracer::backtracer(const backtracer& other)
 {
 	std::lock_guard<std::mutex> lock(other.mutex_);
-	enabled_ = other.enabled();
+	enabled_  = other.enabled();
 	messages_ = other.messages_;
 }
 
 SPDLOG_INLINE backtracer::backtracer(backtracer&& other) SPDLOG_NOEXCEPT
 {
 	std::lock_guard<std::mutex> lock(other.mutex_);
-	enabled_ = other.enabled();
+	enabled_  = other.enabled();
 	messages_ = std::move(other.messages_);
 }
 
 SPDLOG_INLINE backtracer& backtracer::operator=(backtracer other)
 {
 	std::lock_guard<std::mutex> lock(mutex_);
-	enabled_ = other.enabled();
+	enabled_  = other.enabled();
 	messages_ = std::move(other.messages_);
 	return *this;
 }

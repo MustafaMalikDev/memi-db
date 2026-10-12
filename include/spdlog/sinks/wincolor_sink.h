@@ -44,7 +44,7 @@ public:
 	wincolor_sink(void* out_handle, color_mode mode);
 	~wincolor_sink() override;
 
-	wincolor_sink(const wincolor_sink& other) = delete;
+	wincolor_sink(const wincolor_sink& other)	     = delete;
 	wincolor_sink& operator=(const wincolor_sink& other) = delete;
 
 	// change the color for the given level
@@ -58,10 +58,10 @@ public:
 
 protected:
 	using mutex_t = typename ConsoleMutex::mutex_t;
-	void* out_handle_;
-	mutex_t& mutex_;
-	bool should_do_colors_;
-	std::unique_ptr<spdlog::formatter> formatter_;
+	void*					   out_handle_;
+	mutex_t&				   mutex_;
+	bool					   should_do_colors_;
+	std::unique_ptr<spdlog::formatter>	   formatter_;
 	std::array<std::uint16_t, level::n_levels> colors_;
 
 	// set foreground color and return the orig console attributes (for resetting later)

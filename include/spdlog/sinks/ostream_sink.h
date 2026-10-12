@@ -37,7 +37,7 @@ public:
 		, force_flush_(force_flush)
 	{
 	}
-	ostream_sink(const ostream_sink&) = delete;
+	ostream_sink(const ostream_sink&)	     = delete;
 	ostream_sink& operator=(const ostream_sink&) = delete;
 
 protected:
@@ -58,7 +58,7 @@ protected:
 	}
 
 	std::ostream& ostream_;
-	bool force_flush_;
+	bool	      force_flush_;
 };
 
 using ostream_sink_mt = ostream_sink<std::mutex>;

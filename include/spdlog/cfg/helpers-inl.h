@@ -66,10 +66,10 @@ inline std::string& trim_(std::string& str)
 // "key=" => ("key", "")
 // "val" => ("", "val")
 
-inline std::pair<std::string, std::string> extract_kv_(char sep,
+inline std::pair<std::string, std::string> extract_kv_(char		  sep,
 						       const std::string& str)
 {
-	auto n = str.find(sep);
+	auto	    n = str.find(sep);
 	std::string k, v;
 	if (n == std::string::npos) {
 		v = str;
@@ -85,14 +85,14 @@ inline std::pair<std::string, std::string> extract_kv_(char sep,
 inline std::unordered_map<std::string, std::string>
 extract_key_vals_(const std::string& str)
 {
-	std::string token;
-	std::istringstream token_stream(str);
+	std::string				     token;
+	std::istringstream			     token_stream(str);
 	std::unordered_map<std::string, std::string> rv{};
 	while (std::getline(token_stream, token, ',')) {
 		if (token.empty()) {
 			continue;
 		}
-		auto kv = extract_kv_('=', token);
+		auto kv	     = extract_kv_('=', token);
 		rv[kv.first] = kv.second;
 	}
 	return rv;
@@ -106,13 +106,13 @@ SPDLOG_INLINE void load_levels(const std::string& input)
 
 	auto key_vals = extract_key_vals_(input);
 	std::unordered_map<std::string, level::level_enum> levels;
-	level::level_enum global_level = level::info;
-	bool global_level_found = false;
+	level::level_enum global_level	     = level::info;
+	bool		  global_level_found = false;
 
 	for (auto& name_level : key_vals) {
 		auto& logger_name = name_level.first;
-		auto level_name = to_lower_(name_level.second);
-		auto level = level::from_str(level_name);
+		auto  level_name  = to_lower_(name_level.second);
+		auto  level	  = level::from_str(level_name);
 		// ignore unrecognized level names
 		if (level == level::off && level_name != "off") {
 			continue;
@@ -120,7 +120,7 @@ SPDLOG_INLINE void load_levels(const std::string& input)
 		if (logger_name.empty()) // no logger name indicate global level
 		{
 			global_level_found = true;
-			global_level = level;
+			global_level	   = level;
 		} else {
 			levels[logger_name] = level;
 		}

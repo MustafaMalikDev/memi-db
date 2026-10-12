@@ -138,9 +138,9 @@ inline bool write_ostream_unicode(std::wostream&,
 template <typename Char>
 void write_buffer(std::basic_ostream<Char>& os, buffer<Char>& buf)
 {
-	const Char* buf_data = buf.data();
+	const Char* buf_data	  = buf.data();
 	using unsigned_streamsize = std::make_unsigned<std::streamsize>::type;
-	unsigned_streamsize size = buf.size();
+	unsigned_streamsize size  = buf.size();
 	unsigned_streamsize max_size =
 		to_unsigned(max_value<std::streamsize>());
 	do {
@@ -156,7 +156,7 @@ void format_value(buffer<Char>& buf, const T& value,
 		  locale_ref loc = locale_ref())
 {
 	auto&& format_buf = formatbuf<std::basic_streambuf<Char> >(buf);
-	auto&& output = std::basic_ostream<Char>(&format_buf);
+	auto&& output	  = std::basic_ostream<Char>(&format_buf);
 #if !defined(FMT_STATIC_THOUSANDS_SEPARATOR)
 	if (loc)
 		output.imbue(loc.get<std::locale>());
@@ -177,7 +177,7 @@ struct basic_ostream_formatter : formatter<basic_string_view<Char>, Char> {
 	void set_debug_format() = delete;
 
 	template <typename T, typename OutputIt>
-	auto format(const T& value,
+	auto format(const T&				  value,
 		    basic_format_context<OutputIt, Char>& ctx) const -> OutputIt
 	{
 		auto buffer = basic_memory_buffer<Char>();
@@ -193,7 +193,7 @@ template <typename T, typename Char>
 struct formatter<detail::streamed_view<T>, Char>
 	: basic_ostream_formatter<Char> {
 	template <typename OutputIt>
-	auto format(detail::streamed_view<T> view,
+	auto format(detail::streamed_view<T>		  view,
 		    basic_format_context<OutputIt, Char>& ctx) const -> OutputIt
 	{
 		return basic_ostream_formatter<Char>::format(view.value, ctx);
@@ -236,7 +236,7 @@ inline void vprint_directly(std::ostream& os, string_view format_str,
 } // namespace detail
 
 FMT_MODULE_EXPORT template <typename Char>
-void vprint(std::basic_ostream<Char>& os,
+void vprint(std::basic_ostream<Char>&		      os,
 	    basic_string_view<type_identity_t<Char> > format_str,
 	    basic_format_args<buffer_context<type_identity_t<Char> > > args)
 {
@@ -268,7 +268,7 @@ void print(std::ostream& os, format_string<T...> fmt, T&&... args)
 
 FMT_MODULE_EXPORT
 template <typename... Args>
-void print(std::wostream& os,
+void print(std::wostream&					  os,
 	   basic_format_string<wchar_t, type_identity_t<Args>...> fmt,
 	   Args&&... args)
 {

@@ -85,7 +85,7 @@ SPDLOG_API void set_formatter(std::unique_ptr<spdlog::formatter> formatter);
 // Set global format string.
 // example: spdlog::set_pattern("%Y-%m-%d %H:%M:%S.%e %l : %v");
 SPDLOG_API void
-set_pattern(std::string pattern,
+set_pattern(std::string	      pattern,
 	    pattern_time_type time_type = pattern_time_type::local);
 
 // enable global backtrace support
@@ -350,8 +350,8 @@ template <typename T> inline void critical(const T& msg)
 #	define SPDLOG_TRACE(...) \
 		SPDLOG_LOGGER_TRACE(spdlog::default_logger_raw(), __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_TRACE(logger, ...) (void)0
-#	define SPDLOG_TRACE(...) (void)0
+#	define SPDLOG_LOGGER_TRACE(logger, ...) (void) 0
+#	define SPDLOG_TRACE(...) (void) 0
 #endif
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_DEBUG
@@ -360,8 +360,8 @@ template <typename T> inline void critical(const T& msg)
 #	define SPDLOG_DEBUG(...) \
 		SPDLOG_LOGGER_DEBUG(spdlog::default_logger_raw(), __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_DEBUG(logger, ...) (void)0
-#	define SPDLOG_DEBUG(...) (void)0
+#	define SPDLOG_LOGGER_DEBUG(logger, ...) (void) 0
+#	define SPDLOG_DEBUG(...) (void) 0
 #endif
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_INFO
@@ -370,8 +370,8 @@ template <typename T> inline void critical(const T& msg)
 #	define SPDLOG_INFO(...) \
 		SPDLOG_LOGGER_INFO(spdlog::default_logger_raw(), __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_INFO(logger, ...) (void)0
-#	define SPDLOG_INFO(...) (void)0
+#	define SPDLOG_LOGGER_INFO(logger, ...) (void) 0
+#	define SPDLOG_INFO(...) (void) 0
 #endif
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_WARN
@@ -380,8 +380,8 @@ template <typename T> inline void critical(const T& msg)
 #	define SPDLOG_WARN(...) \
 		SPDLOG_LOGGER_WARN(spdlog::default_logger_raw(), __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_WARN(logger, ...) (void)0
-#	define SPDLOG_WARN(...) (void)0
+#	define SPDLOG_LOGGER_WARN(logger, ...) (void) 0
+#	define SPDLOG_WARN(...) (void) 0
 #endif
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_ERROR
@@ -390,8 +390,8 @@ template <typename T> inline void critical(const T& msg)
 #	define SPDLOG_ERROR(...) \
 		SPDLOG_LOGGER_ERROR(spdlog::default_logger_raw(), __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_ERROR(logger, ...) (void)0
-#	define SPDLOG_ERROR(...) (void)0
+#	define SPDLOG_LOGGER_ERROR(logger, ...) (void) 0
+#	define SPDLOG_ERROR(...) (void) 0
 #endif
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_CRITICAL
@@ -401,8 +401,8 @@ template <typename T> inline void critical(const T& msg)
 		SPDLOG_LOGGER_CRITICAL(spdlog::default_logger_raw(), \
 				       __VA_ARGS__)
 #else
-#	define SPDLOG_LOGGER_CRITICAL(logger, ...) (void)0
-#	define SPDLOG_CRITICAL(...) (void)0
+#	define SPDLOG_LOGGER_CRITICAL(logger, ...) (void) 0
+#	define SPDLOG_CRITICAL(...) (void) 0
 #endif
 
 #ifdef SPDLOG_HEADER_ONLY

@@ -38,11 +38,11 @@ using is_exotic_char = bool_constant<!std::is_same<T, char>::value>;
 
 FMT_MODULE_EXPORT_BEGIN
 
-using wstring_view = basic_string_view<wchar_t>;
+using wstring_view	    = basic_string_view<wchar_t>;
 using wformat_parse_context = basic_format_parse_context<wchar_t>;
-using wformat_context = buffer_context<wchar_t>;
-using wformat_args = basic_format_args<wformat_context>;
-using wmemory_buffer = basic_memory_buffer<wchar_t>;
+using wformat_context	    = buffer_context<wchar_t>;
+using wformat_args	    = basic_format_args<wformat_context>;
+using wmemory_buffer	    = basic_memory_buffer<wchar_t>;
 
 #if FMT_GCC_VERSION && FMT_GCC_VERSION < 409
 // Workaround broken conversion on older gcc.
@@ -195,9 +195,9 @@ vformat_to(OutputIt out, const Locale& loc, const S& format_str,
 
 template <typename OutputIt, typename Locale, typename S, typename... Args,
 	  typename Char = char_t<S>,
-	  bool enable = detail::is_output_iterator<OutputIt, Char>::value &&
-			detail::is_locale<Locale>::value &&
-			detail::is_exotic_char<Char>::value>
+	  bool enable	= detail::is_output_iterator<OutputIt, Char>::value &&
+			  detail::is_locale<Locale>::value &&
+			  detail::is_exotic_char<Char>::value>
 inline auto format_to(OutputIt out, const Locale& loc, const S& format_str,
 		      Args&&... args) ->
 	typename std::enable_if<enable, OutputIt>::type

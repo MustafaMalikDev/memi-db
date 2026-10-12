@@ -48,7 +48,7 @@ namespace sinks
 struct daily_filename_calculator {
 	// Create filename for the form basename.YYYY-MM-DD
 	static filename_t calc_filename(const filename_t& filename,
-					const tm& now_tm)
+					const tm&	  now_tm)
 	{
 		filename_t basename, ext;
 		std::tie(basename, ext) =
@@ -71,7 +71,7 @@ struct daily_filename_calculator {
  */
 struct daily_filename_format_calculator {
 	static filename_t calc_filename(const filename_t& file_path,
-					const tm& now_tm)
+					const tm&	  now_tm)
 	{
 #if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
 		std::wstringstream stream;
@@ -94,7 +94,7 @@ public:
 	// create daily file sink which rotates on given time
 	daily_file_sink(filename_t base_filename, int rotation_hour,
 			int rotation_minute, bool truncate = false,
-			uint16_t max_files = 0,
+			uint16_t		   max_files	  = 0,
 			const file_event_handlers& event_handlers = {})
 		: base_filename_(std::move(base_filename))
 		, rotation_h_(rotation_hour)
@@ -110,7 +110,7 @@ public:
 				"daily_file_sink: Invalid rotation time in ctor");
 		}
 
-		auto now = log_clock::now();
+		auto now      = log_clock::now();
 		auto filename = FileNameCalc::calc_filename(base_filename_,
 							    now_tm(now));
 		file_helper_.open(filename, truncate_);
@@ -130,7 +130,7 @@ public:
 protected:
 	void sink_it_(const details::log_msg& msg) override
 	{
-		auto time = msg.time;
+		auto time	   = msg.time;
 		bool should_rotate = time >= rotation_tp_;
 		if (should_rotate) {
 			auto filename = FileNameCalc::calc_filename(
@@ -161,7 +161,7 @@ private:
 		filenames_q_ = details::circular_q<filename_t>(
 			static_cast<size_t>(max_files_));
 		std::vector<filename_t> filenames;
-		auto now = log_clock::now();
+		auto			now = log_clock::now();
 		while (filenames.size() < max_files_) {
 			auto filename = FileNameCalc::calc_filename(
 				base_filename_, now_tm(now));
@@ -185,11 +185,11 @@ private:
 
 	log_clock::time_point next_rotation_tp_()
 	{
-		auto now = log_clock::now();
-		tm date = now_tm(now);
-		date.tm_hour = rotation_h_;
-		date.tm_min = rotation_m_;
-		date.tm_sec = 0;
+		auto now	   = log_clock::now();
+		tm   date	   = now_tm(now);
+		date.tm_hour	   = rotation_h_;
+		date.tm_min	   = rotation_m_;
+		date.tm_sec	   = 0;
 		auto rotation_time = log_clock::from_time_t(std::mktime(&date));
 		if (rotation_time > now) {
 			return rotation_time;
@@ -220,13 +220,13 @@ private:
 		filenames_q_.push_back(std::move(current_file));
 	}
 
-	filename_t base_filename_;
-	int rotation_h_;
-	int rotation_m_;
-	log_clock::time_point rotation_tp_;
-	details::file_helper file_helper_;
-	bool truncate_;
-	uint16_t max_files_;
+	filename_t			base_filename_;
+	int				rotation_h_;
+	int				rotation_m_;
+	log_clock::time_point		rotation_tp_;
+	details::file_helper		file_helper_;
+	bool				truncate_;
+	uint16_t			max_files_;
 	details::circular_q<filename_t> filenames_q_;
 };
 
@@ -246,7 +246,7 @@ template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
 daily_logger_mt(const std::string& logger_name, const filename_t& filename,
 		int hour = 0, int minute = 0, bool truncate = false,
-		uint16_t max_files = 0,
+		uint16_t		   max_files	  = 0,
 		const file_event_handlers& event_handlers = {})
 {
 	return Factory::template create<sinks::daily_file_sink_mt>(
@@ -270,7 +270,7 @@ template <typename Factory = spdlog::synchronous_factory>
 inline std::shared_ptr<logger>
 daily_logger_st(const std::string& logger_name, const filename_t& filename,
 		int hour = 0, int minute = 0, bool truncate = false,
-		uint16_t max_files = 0,
+		uint16_t		   max_files	  = 0,
 		const file_event_handlers& event_handlers = {})
 {
 	return Factory::template create<sinks::daily_file_sink_st>(

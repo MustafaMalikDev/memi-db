@@ -73,8 +73,8 @@ OutputIterator copy(wchar_t ch, OutputIterator out)
 // Returns true if T has a std::string-like interface, like std::string_view.
 template <typename T> class is_std_string_like {
 	template <typename U>
-	static auto check(U* p) -> decltype((void)p->find('a'), p->length(),
-					    (void)p->data(), int());
+	static auto check(U* p) -> decltype((void) p->find('a'), p->length(),
+					    (void) p->data(), int());
 	template <typename> static void check(...);
 
 public:
@@ -89,7 +89,7 @@ struct is_std_string_like<fmt::basic_string_view<Char> > : std::true_type {};
 
 template <typename T> class is_map {
 	template <typename U> static auto check(U*) -> typename U::mapped_type;
-	template <typename> static void check(...);
+	template <typename> static void	  check(...);
 
 public:
 #ifdef FMT_FORMAT_MAP_AS_LIST
@@ -102,7 +102,7 @@ public:
 
 template <typename T> class is_set {
 	template <typename U> static auto check(U*) -> typename U::key_type;
-	template <typename> static void check(...);
+	template <typename> static void	  check(...);
 
 public:
 #ifdef FMT_FORMAT_SET_AS_LIST
@@ -212,8 +212,8 @@ public:
 // Check for integer_sequence
 #if defined(__cpp_lib_integer_sequence) || FMT_MSC_VERSION >= 1900
 template <typename T, T... N>
-using integer_sequence = std::integer_sequence<T, N...>;
-template <size_t... N> using index_sequence = std::index_sequence<N...>;
+using integer_sequence			      = std::integer_sequence<T, N...>;
+template <size_t... N> using index_sequence   = std::index_sequence<N...>;
 template <size_t N> using make_index_sequence = std::make_index_sequence<N>;
 #else
 template <typename T, T... N> struct integer_sequence {
@@ -246,8 +246,8 @@ public:
 };
 template <typename T, typename C> class is_tuple_formattable_<T, C, true> {
 	template <std::size_t... I>
-	static std::true_type check2(index_sequence<I...>,
-				     integer_sequence<bool, (I == I)...>);
+	static std::true_type  check2(index_sequence<I...>,
+				      integer_sequence<bool, (I == I)...>);
 	static std::false_type check2(...);
 	template <std::size_t... I>
 	static decltype(check2(
@@ -268,8 +268,8 @@ void for_each(index_sequence<Is...>, Tuple&& tup, F&& f) noexcept
 {
 	using std::get;
 	// using free function get<I>(T) now.
-	const int _[] = { 0, ((void)f(get<Is>(tup)), 0)... };
-	(void)_; // blocks warnings
+	const int _[] = { 0, ((void) f(get<Is>(tup)), 0)... };
+	(void) _; // blocks warnings
 }
 
 template <class T>
@@ -386,9 +386,9 @@ private:
 			out = detail::write_range_entry<Char>(out, v);
 			++i;
 		}
-		int i;
+		int				  i;
 		typename FormatContext::iterator& out;
-		basic_string_view<Char> separator;
+		basic_string_view<Char>		  separator;
 	};
 
 public:
@@ -419,7 +419,7 @@ public:
 		-> decltype(ctx.out())
 	{
 		auto out = ctx.out();
-		out = detail::copy_str<Char>(opening_bracket_, out);
+		out	 = detail::copy_str<Char>(opening_bracket_, out);
 		detail::for_each(values, format_each<FormatContext>{
 						 0, out, separator_ });
 		out = detail::copy_str<Char>(closing_bracket_, out);
@@ -490,8 +490,8 @@ struct range_formatter<
 			    detail::has_fallback_formatter<T, Char> > >::value> > {
 private:
 	detail::range_formatter_type<Char, T> underlying_;
-	bool custom_specs_ = false;
-	basic_string_view<Char> separator_ =
+	bool				      custom_specs_ = false;
+	basic_string_view<Char>		      separator_ =
 		detail::string_literal<Char, ',', ' '>{};
 	basic_string_view<Char> opening_bracket_ =
 		detail::string_literal<Char, '['>{};
@@ -541,7 +541,7 @@ public:
 	template <typename ParseContext>
 	FMT_CONSTEXPR auto parse(ParseContext& ctx) -> decltype(ctx.begin())
 	{
-		auto it = ctx.begin();
+		auto it	 = ctx.begin();
 		auto end = ctx.end();
 		if (it == end || *it == '}') {
 			maybe_set_debug_format();
@@ -572,10 +572,10 @@ public:
 	auto format(R&& range, FormatContext& ctx) const -> decltype(ctx.out())
 	{
 		detail::range_mapper<buffer_context<Char> > mapper;
-		auto out = ctx.out();
-		out = detail::copy_str<Char>(opening_bracket_, out);
-		int i = 0;
-		auto it = detail::range_begin(range);
+		auto					    out = ctx.out();
+		out	 = detail::copy_str<Char>(opening_bracket_, out);
+		int  i	 = 0;
+		auto it	 = detail::range_begin(range);
 		auto end = detail::range_end(range);
 		for (; it != end; ++it) {
 			if (i > 0)
@@ -709,7 +709,7 @@ struct formatter<tuple_join_view<Char, T...>, Char> {
 
 	template <typename FormatContext>
 	auto format(const tuple_join_view<Char, T...>& value,
-		    FormatContext& ctx) const ->
+		    FormatContext&		       ctx) const ->
 		typename FormatContext::iterator
 	{
 		return do_format(
@@ -757,7 +757,7 @@ private:
 
 	template <typename FormatContext, size_t N>
 	auto do_format(const tuple_join_view<Char, T...>& value,
-		       FormatContext& ctx,
+		       FormatContext&			  ctx,
 		       std::integral_constant<size_t, N>) const ->
 		typename FormatContext::iterator
 	{
@@ -798,7 +798,7 @@ FMT_CONSTEXPR auto join(const std::tuple<T...>& tuple, string_view sep)
 }
 
 template <typename... T>
-FMT_CONSTEXPR auto join(const std::tuple<T...>& tuple,
+FMT_CONSTEXPR auto join(const std::tuple<T...>&	   tuple,
 			basic_string_view<wchar_t> sep)
 	-> tuple_join_view<wchar_t, T...>
 {

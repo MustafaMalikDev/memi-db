@@ -46,7 +46,7 @@ class tcp_client {
 	static void init_winsock_()
 	{
 		WSADATA wsaData;
-		auto rv = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		auto	rv = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (rv != 0) {
 			throw_winsock_error_("WSAStartup failed",
 					     ::WSAGetLastError());
@@ -109,11 +109,11 @@ public:
 			AI_NUMERICSERV; // port passed as as numeric value
 		hints.ai_protocol = 0;
 
-		auto port_str = std::to_string(port);
+		auto		 port_str = std::to_string(port);
 		struct addrinfo* addrinfo_result;
 		auto rv = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints,
 					&addrinfo_result);
-		int last_error = 0;
+		int  last_error = 0;
 		if (rv != 0) {
 			last_error = ::WSAGetLastError();
 			WSACleanup();
@@ -123,7 +123,7 @@ public:
 		// Try each address until we successfully connect(2).
 
 		for (auto* rp = addrinfo_result; rp != nullptr;
-		     rp = rp->ai_next) {
+		     rp	      = rp->ai_next) {
 			socket_ = socket(rp->ai_family, rp->ai_socktype,
 					 rp->ai_protocol);
 			if (socket_ == INVALID_SOCKET) {
@@ -132,7 +132,7 @@ public:
 				continue;
 			}
 			if (::connect(socket_, rp->ai_addr,
-				      (int)rp->ai_addrlen) == 0) {
+				      (int) rp->ai_addrlen) == 0) {
 				break;
 			} else {
 				last_error = ::WSAGetLastError();
@@ -160,7 +160,7 @@ public:
 		while (bytes_sent < n_bytes) {
 			const int send_flags = 0;
 			auto write_result = ::send(socket_, data + bytes_sent,
-						   (int)(n_bytes - bytes_sent),
+						   (int) (n_bytes - bytes_sent),
 						   send_flags);
 			if (write_result == SOCKET_ERROR) {
 				int last_error = ::WSAGetLastError();

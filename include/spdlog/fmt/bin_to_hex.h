@@ -82,7 +82,7 @@ public:
 	}
 
 private:
-	It begin_, end_;
+	It     begin_, end_;
 	size_t size_per_line_;
 };
 } // namespace details
@@ -133,12 +133,12 @@ namespace
 #endif
 {
 template <typename T> struct formatter<spdlog::details::dump_info<T>, char> {
-	const char delimiter = ' ';
-	bool put_newlines = true;
-	bool put_delimiters = true;
-	bool use_uppercase = false;
-	bool put_positions = true; // position on start of each line
-	bool show_ascii = false;
+	const char delimiter	  = ' ';
+	bool	   put_newlines	  = true;
+	bool	   put_delimiters = true;
+	bool	   use_uppercase  = false;
+	bool	   put_positions  = true; // position on start of each line
+	bool	   show_ascii	  = false;
 
 	// parse the format string flags
 	template <typename ParseContext>
@@ -159,7 +159,7 @@ template <typename T> struct formatter<spdlog::details::dump_info<T>, char> {
 				break;
 			case 'n':
 				put_newlines = false;
-				show_ascii = false;
+				show_ascii   = false;
 				break;
 			case 'a':
 				if (put_newlines) {
@@ -217,8 +217,8 @@ template <typename T> struct formatter<spdlog::details::dump_info<T>, char> {
 						    i - the_range.get_begin()));
 
 				// put first byte without delimiter in front of it
-				*inserter++ = hex_chars[(ch >> 4) & 0x0f];
-				*inserter++ = hex_chars[ch & 0x0f];
+				*inserter++   = hex_chars[(ch >> 4) & 0x0f];
+				*inserter++   = hex_chars[ch & 0x0f];
 				start_of_line = i;
 				continue;
 			}
@@ -249,7 +249,7 @@ template <typename T> struct formatter<spdlog::details::dump_info<T>, char> {
 			*inserter++ = delimiter;
 			for (auto j = start_of_line; j != the_range.get_end();
 			     j++) {
-				auto pc = static_cast<unsigned char>(*j);
+				auto pc	    = static_cast<unsigned char>(*j);
 				*inserter++ = std::isprint(pc) ?
 						      static_cast<char>(*j) :
 						      '.';

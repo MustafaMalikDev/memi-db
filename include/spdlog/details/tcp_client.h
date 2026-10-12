@@ -81,7 +81,7 @@ public:
 			AI_NUMERICSERV; // port passed as as numeric value
 		hints.ai_protocol = 0;
 
-		auto port_str = std::to_string(port);
+		auto		 port_str = std::to_string(port);
 		struct addrinfo* addrinfo_result;
 		auto rv = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints,
 					&addrinfo_result);
@@ -93,7 +93,7 @@ public:
 		// Try each address until we successfully connect(2).
 		int last_errno = 0;
 		for (auto* rp = addrinfo_result; rp != nullptr;
-		     rp = rp->ai_next) {
+		     rp	      = rp->ai_next) {
 #if defined(SOCK_CLOEXEC)
 			const int flags = SOCK_CLOEXEC;
 #else

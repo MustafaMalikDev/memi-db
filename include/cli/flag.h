@@ -24,7 +24,7 @@
 namespace memi
 {
 
-std::string_view extract_flag(const std::string& flag,
+std::string_view extract_flag(const std::string&		   flag,
 			      const std::vector<std::string_view>& args);
 
 }

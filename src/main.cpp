@@ -15,15 +15,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include "cli/flag.h"
 #include "cli/port.h"
+#include "net/socket.h"
+#include "query/msql.h"
+#include <iostream>
+
+using namespace memi;
+
+void signal_handle(int signal);
 
 int main(int argc, char* argv[])
 {
-	// std::vector<std::string_view> sample_args = { "--port", "1234" };
-	// std::string_view result = memi::extract_flag("port", sample_args);
-	// std::cout << result << '\n';
+	signal(SIGTRAP, signal_handle);
+	signal(SIGINT, signal_handle);
+	signal(SIGKILL, signal_handle);
 
-	memi::port& port = memi::port::instance(argc, argv);
+	msql_query query("GET something");
+	query.execute();
+
+	port& port = port::instance(argc, argv);
+
+	/* clang-format off */
+    /* https://patorjk.com/software/taag/#p=display&f=RubiFont&t=memi-db&x=none&v=4&h=4&w=80&we=false */
+    std::cout << "\n";
+	std::cout << "▗▖  ▗▖▗▄▄▄▖▗▖  ▗▖▗▄▄▄▖▗▄▄▄ ▗▄▄▖\t\t memi-db" << '\n';
+	std::cout << "▐▛▚▞▜▌▐▌   ▐▛▚▞▜▌  █  ▐▌  █▐▌ ▐▌\t Research In-Memory Database" << '\n';
+	std::cout << "▐▌  ▐▌▐▛▀▀▘▐▌  ▐▌  █  ▐▌  █▐▛▀▚▖\t Port: " << port.get_port() << '\n';
+	std::cout << "▐▌  ▐▌▐▙▄▄▖▐▌  ▐▌▗▄█▄▖▐▙▄▄▀▐▙▄▞\t\t PID: " << getpid() << '\n';
+    std::cout << "\n";
+	/* clang-format on */
+
+	/* have to use memi::socket otherwise it will get confused with C++ socket lol */
+	memi::socket sock(port.get_port(), 1024, 8);
+	sock.start();
 }

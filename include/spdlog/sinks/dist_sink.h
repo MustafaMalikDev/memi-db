@@ -46,7 +46,7 @@ public:
 	{
 	}
 
-	dist_sink(const dist_sink&) = delete;
+	dist_sink(const dist_sink&)	       = delete;
 	dist_sink& operator=(const dist_sink&) = delete;
 
 	void add_sink(std::shared_ptr<sink> sub_sink)

@@ -58,20 +58,20 @@ public:
 	{
 	}
 
-	systemd_sink(const systemd_sink&) = delete;
+	systemd_sink(const systemd_sink&)	     = delete;
 	systemd_sink& operator=(const systemd_sink&) = delete;
 
 protected:
 	const std::string ident_;
-	bool enable_formatting_ = false;
-	using levels_array = std::array<int, 7>;
+	bool		  enable_formatting_ = false;
+	using levels_array		     = std::array<int, 7>;
 	levels_array syslog_levels_;
 
 	void sink_it_(const details::log_msg& msg) override
 	{
-		int err;
+		int	      err;
 		string_view_t payload;
-		memory_buf_t formatted;
+		memory_buf_t  formatted;
 		if (enable_formatting_) {
 			base_sink<Mutex>::formatter_->format(msg, formatted);
 			payload = string_view_t(formatted.data(),
@@ -94,37 +94,38 @@ protected:
 		// Do not send source location if not available
 		if (msg.source.empty()) {
 			// Note: function call inside '()' to avoid macro expansion
-			err = (sd_journal_send)("MESSAGE=%.*s",
-						static_cast<int>(length),
-						payload.data(), "PRIORITY=%d",
-						syslog_level(msg.level),
+			err = (sd_journal_send) ("MESSAGE=%.*s",
+						 static_cast<int>(length),
+						 payload.data(), "PRIORITY=%d",
+						 syslog_level(msg.level),
 #ifndef SPDLOG_NO_THREAD_ID
-						"TID=%zu", msg.thread_id,
+						 "TID=%zu", msg.thread_id,
 #endif
-						"SYSLOG_IDENTIFIER=%.*s",
-						static_cast<int>(
-							syslog_identifier
-								.size()),
-						syslog_identifier.data(),
-						nullptr);
+						 "SYSLOG_IDENTIFIER=%.*s",
+						 static_cast<int>(
+							 syslog_identifier
+								 .size()),
+						 syslog_identifier.data(),
+						 nullptr);
 		} else {
-			err = (sd_journal_send)("MESSAGE=%.*s",
-						static_cast<int>(length),
-						payload.data(), "PRIORITY=%d",
-						syslog_level(msg.level),
+			err = (sd_journal_send) ("MESSAGE=%.*s",
+						 static_cast<int>(length),
+						 payload.data(), "PRIORITY=%d",
+						 syslog_level(msg.level),
 #ifndef SPDLOG_NO_THREAD_ID
-						"TID=%zu", msg.thread_id,
+						 "TID=%zu", msg.thread_id,
 #endif
-						"SYSLOG_IDENTIFIER=%.*s",
-						static_cast<int>(
-							syslog_identifier
-								.size()),
-						syslog_identifier.data(),
-						"CODE_FILE=%s",
-						msg.source.filename,
-						"CODE_LINE=%d", msg.source.line,
-						"CODE_FUNC=%s",
-						msg.source.funcname, nullptr);
+						 "SYSLOG_IDENTIFIER=%.*s",
+						 static_cast<int>(
+							 syslog_identifier
+								 .size()),
+						 syslog_identifier.data(),
+						 "CODE_FILE=%s",
+						 msg.source.filename,
+						 "CODE_LINE=%d",
+						 msg.source.line,
+						 "CODE_FUNC=%s",
+						 msg.source.funcname, nullptr);
 		}
 
 		if (err) {

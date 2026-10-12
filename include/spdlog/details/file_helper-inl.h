@@ -55,7 +55,7 @@ SPDLOG_INLINE void file_helper::open(const filename_t& fname, bool truncate)
 	close();
 	filename_ = fname;
 
-	auto* mode = SPDLOG_FILENAME_T("ab");
+	auto* mode	 = SPDLOG_FILENAME_T("ab");
 	auto* trunc_mode = SPDLOG_FILENAME_T("wb");
 
 	if (event_handlers_.before_open) {
@@ -138,7 +138,7 @@ SPDLOG_INLINE void file_helper::write(const memory_buf_t& buf)
 	if (fd_ == nullptr)
 		return;
 	size_t msg_size = buf.size();
-	auto data = buf.data();
+	auto   data	= buf.data();
 	if (std::fwrite(data, 1, msg_size, fd_) != msg_size) {
 		throw_spdlog_ex("Failed writing to file " +
 					os::filename_to_str(filename_),

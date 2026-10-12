@@ -46,8 +46,8 @@ namespace details
 
 class udp_client {
 	static constexpr int TX_BUFFER_SIZE = 1024 * 10;
-	int socket_ = -1;
-	struct sockaddr_in sockAddr_;
+	int		     socket_	    = -1;
+	struct sockaddr_in   sockAddr_;
 
 	void cleanup_()
 	{
@@ -74,7 +74,7 @@ public:
 		}
 
 		sockAddr_.sin_family = AF_INET;
-		sockAddr_.sin_port = htons(port);
+		sockAddr_.sin_port   = htons(port);
 
 		if (::inet_aton(host.c_str(), &sockAddr_.sin_addr) == 0) {
 			cleanup_();
@@ -98,10 +98,10 @@ public:
 	// On error close the connection and throw.
 	void send(const char* data, size_t n_bytes)
 	{
-		ssize_t toslen = 0;
-		socklen_t tolen = sizeof(struct sockaddr);
+		ssize_t	  toslen = 0;
+		socklen_t tolen	 = sizeof(struct sockaddr);
 		if ((toslen = ::sendto(socket_, data, n_bytes, 0,
-				       (struct sockaddr*)&sockAddr_, tolen)) ==
+				       (struct sockaddr*) &sockAddr_, tolen)) ==
 		    -1) {
 			throw_spdlog_ex("sendto(2) failed", errno);
 		}
