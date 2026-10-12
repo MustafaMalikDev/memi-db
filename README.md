@@ -1,5 +1,3 @@
-# memi-db
-
 <img src="./logo.png">
 
 An experimental in-memory database inspired by and based on Redis.
