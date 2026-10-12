@@ -1,4 +1,7 @@
 # memi-db
+
+<img src="./logo.png">
+
 An experimental in-memory database inspired by and based on Redis.
 
 This is for pure learning purposes to better understand how in-memory databases work and get familiar with high performance codebases such as Redis. In no way is this database appropriate for production, but it is a starting point.
